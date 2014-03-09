@@ -1,0 +1,15 @@
+{
+  "name": "scotty-lib",
+  "dependencies": {
+    "github": "^0.1.14",
+    "semver": "^2.2.1",
+    "coffee-script": "^1.7.1"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*"
+  },
+  "scripts": {
+    "test": "mocha --compilers coffee:coffee-script"
+  }
+}
