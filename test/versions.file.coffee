@@ -84,3 +84,5 @@ describe 'Version file Instance', ->
 
         fs.existsSync(v).should.equal true
 
+        fs.unlinkSync v
+
