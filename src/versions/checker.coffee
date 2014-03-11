@@ -2,25 +2,13 @@ semver = require('semver')
 
 class exports.checker
     constructor: ()->
-        @latest_version = null
-        @latest_installed = null
 
 
-    setLatest: (version)->
-        @latest_version = @cleanVersion(version)
+    getLatest: (versions)->
+        versions = versions.map (elem)=>
+            return @cleanVersion(elem)
 
-
-    getLatest: ()->
-        return @latest_version
-
-
-    setLatestInstalled: (version)->
-        @latest_installed = @cleanVersion(version)
-
-
-    isLatestInstalled: ()->
-        return semver.eq(@latest_version, @latest_installed)
-
+        return semver.maxSatisfying(versions, ">0.0.0")
 
     cleanVersion: (orig_version)->
         version = orig_version.replace /[^0-9\.]/g, ''

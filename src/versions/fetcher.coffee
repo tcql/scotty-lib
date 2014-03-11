@@ -6,21 +6,26 @@ semver = require('semver')
 class exports.fetcher
 
     # Takes instance of GitHubApi (from npmjs.org/package/github)
-    constructor: (@api)->
+    constructor: (@api, @checker)->
         @available_versions = []
-        @latest_version = null
+        @raw_versions = []
+
 
     ###
-     * fetchAvailableVersions(callback) -> null
+     * fetchVersions(callback) -> null
      *     - cb (function): callback with this as first argument and version list as the second argument
      *
      *  Fetches available versions from github api
     ###
-    fetchAvailableVersions: (cb = ->)->
+    fetchVersions: (cb = ->)->
         @api.repos.getTags
             user: "photonstorm"
             repo: "phaser",
             (err, versions)=>
+                @raw_versions = versions
+                versions = versions.map (elem)->
+                    return elem.name
+
                 @setVersions versions
                 cb(@, versions)
 
@@ -35,6 +40,30 @@ class exports.fetcher
 
 
     ###
+     * getRawVersions() -> Array
+     *
+     * Returns cached raw version data
+    ###
+    getRawVersions: ()->
+        return @raw_versions
+
+    ###
+     * getUrlForVersion(version) -> String
+     *     - version(String): zipball url for the given version
+     *
+     * Retrieves the url for the given version's zipball.
+     * Throws an error if no version matches
+    ###
+    getUrlForVersion: (version)->
+        versions = @getRawVersions().filter (elem)=>
+            return @checker.cleanVersion(elem.name) is @checker.cleanVersion(version)
+
+        if versions.length is 0
+            throw Error("No such version")
+
+        return versions[0].zipball_url
+
+    ###
      * setVersions(versions) -> null
      *     - versions(Array): versions to be set
      *
@@ -43,37 +72,22 @@ class exports.fetcher
     setVersions: (versions)->
         @available_versions = versions
 
-
     ###
-     * fetchLatestVersion(callback) -> null
-     *     - cb (function): callback with this as the first argument and the latest version as the second argument
+     * getLatest() -> string
      *
-     * Fetches the most recent version. If we've cached the version list, don't refetch,
-     * just check the cached list. If there isn't a list, fetch it using fetchAvailableVersions
+     * Returns the latest version available for download
     ###
-    fetchLatestVersion: (cb = ->)->
-        handleResult = (versions)=>
-            @latest_version = semver.maxSatisfying(versions, '>0.0.0')
-            cb(@, @latest_version)
-
+    getLatest: ()->
         if @available_versions.length is 0
-            @fetchAvailableVersions (self, versions)=>
-                handleResult(versions)
+            throw Error("Versions must be fetched before checking latest version")
 
-        else
-            handleResult(@available_versions)
-
-    ###
-     * getLatestVersion() -> string
-     *
-     * Returns @latest_version.
-    ###
-    getLatestVersion: ()->
-        return @latest_version
+        return @checker.getLatest(@available_versions)
 
 
+    download: (version, on_complete = ->)->
+        url = @getUrlForVersion(version)
 
-    downloadVersion: (version, on_complete = ->)->
+
         # url     = 'https://github.com/photonstorm/phaser/archive/'+version+'.zip'
         # file    = base.getTempPath()+'/'+version+".zip"
         # dest    = base.getEnginePath()

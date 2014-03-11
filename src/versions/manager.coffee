@@ -1,6 +1,6 @@
-fetcher = require('./fetcher')
-checker = require('./checker')
-local = require('./file')
+fetcher = require('./fetcher').fetcher
+checker = require('./checker').checker
+local = require('./file').file
 
 github = require('github')
 
@@ -18,7 +18,7 @@ class exports.manager
             protocol: "https",
 
         @checker = new checker
-        @fetcher = new fetcher api
+        @fetcher = new fetcher api, @checker
         @local = new local @options.version_file
 
 
@@ -35,7 +35,7 @@ class exports.manager
 
 
     downloadLatestVersionIfNecessary: (cb)->
-        @checker.setLatestInstalled(@local.getLatest())
+        @checker.setLatestInstalled(@local.getLatestInstalled())
 
         @fetcher.fetchLatestVersion (fetch, version)=>
             @checker.setLatest(version)
