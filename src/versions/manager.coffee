@@ -1,3 +1,8 @@
+fetcher = require('./fetcher')
+checker = require('./checker')
+local = require('./file')
+
+github = require('github')
 
 # Tie together versions components.
 # Will allow downloading versions (via fetcher),
@@ -5,3 +10,43 @@
 
 
 class exports.manager
+
+    constructor: (@options)->
+        api = new github
+            version: "3.0.0",
+            debug: true,
+            protocol: "https",
+
+        @checker = new checker
+        @fetcher = new fetcher api
+        @local = new local @options.version_file
+
+
+    setChecker: (checker)->
+        @checker = check
+
+
+    setLocalFile: (local)->
+        @local = local
+
+
+    setFetcher: (fetcher)->
+        @fetcher = fetcher
+
+
+    downloadLatestVersionIfNecessary: (cb)->
+        @checker.setLatestInstalled(@local.getLatest())
+
+        @fetcher.fetchLatestVersion (fetch, version)=>
+            @checker.setLatest(version)
+
+            if not @checker.isLatestInstalled()
+                @fetcher.downloadVersion version, ()=>
+                    @local.setLatestInstalled(version)
+                    @local.addInstalled(version)
+                    cb(true)
+            else
+                cb(false)
+
+
+    getActualInstalledVersion: ()->

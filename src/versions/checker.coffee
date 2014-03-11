@@ -6,8 +6,16 @@ class exports.checker
         @latest_installed = null
 
 
+    setLatest: (version)->
+        @latest_version = @cleanVersion(version)
+
+
     getLatest: ()->
         return @latest_version
+
+
+    setLatestInstalled: (version)->
+        @latest_installed = @cleanVersion(version)
 
 
     isLatestInstalled: ()->

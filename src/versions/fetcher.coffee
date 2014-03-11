@@ -45,13 +45,13 @@ class exports.fetcher
 
 
     ###
-     * getLatestVersion(callback) -> null
+     * fetchLatestVersion(callback) -> null
      *     - cb (function): callback with this as the first argument and the latest version as the second argument
      *
      * Fetches the most recent version. If we've cached the version list, don't refetch,
      * just check the cached list. If there isn't a list, fetch it using fetchAvailableVersions
     ###
-    getLatestVersion: (cb = ->)->
+    fetchLatestVersion: (cb = ->)->
         handleResult = (versions)=>
             @latest_version = semver.maxSatisfying(versions, '>0.0.0')
             cb(@, @latest_version)
@@ -62,6 +62,14 @@ class exports.fetcher
 
         else
             handleResult(@available_versions)
+
+    ###
+     * getLatestVersion() -> string
+     *
+     * Returns @latest_version.
+    ###
+    getLatestVersion: ()->
+        return @latest_version
 
 
 

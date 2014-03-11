@@ -31,7 +31,7 @@ describe 'Version fetcher Instance', ->
         cb = (fetcher, version)->
             version.should.equal '1.6.0'
 
-        f.getLatestVersion(cb)
+        f.fetchLatestVersion(cb)
 
 
     it 'should return latest version from cache', ->
@@ -41,9 +41,9 @@ describe 'Version fetcher Instance', ->
         cb = (fetcher, version)->
             version.should.equal '1.2.0'
 
-        f.getLatestVersion(cb)
+        f.fetchLatestVersion(cb)
 
-
+    # todo
     it 'can download versions', ->
         f = new fetcher {}
-
+        f.should.equal false
