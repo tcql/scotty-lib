@@ -1,4 +1,5 @@
-jsonfile = require('jsonfile')
+jsonfile = require 'jsonfile'
+fs = require 'fs'
 
 class exports.file
 
@@ -7,6 +8,9 @@ class exports.file
 
 
     readFile: (force = false)->
+        if not fs.existsSync(@filepath)
+            @writeFile()
+
         if force or not @filedata
             @filedata = jsonfile.readFileSync(@filepath)
 
