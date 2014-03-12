@@ -2,8 +2,7 @@ chai = require('chai')
 chai.should()
 
 {file} = require '../src/versions/file'
-fs = require 'fs'
-jsonfile = require 'jsonfile'
+fs = require 'fs-extra'
 
 
 describe 'Version file Instance', ->
@@ -17,7 +16,7 @@ describe 'Version file Instance', ->
         f = new file v
         f.writeFile()
 
-        jsonfile.readFileSync(v).should.eql {latest: '', installed: []}
+        fs.readJsonSync(v).should.eql {latest: '', installed: []}
 
         fs.unlinkSync v
 
@@ -58,7 +57,7 @@ describe 'Version file Instance', ->
 
         f.setLatestInstalled("1.7.0")
 
-        jsonfile.readFileSync(v).should.eql {latest: '1.7.0', installed: []}
+        fs.readJsonSync(v).should.eql {latest: '1.7.0', installed: []}
 
         fs.unlinkSync v
 
@@ -70,7 +69,7 @@ describe 'Version file Instance', ->
 
         f.addInstalled("1.7.0")
 
-        jsonfile.readFileSync(v).should.eql {latest: '', installed: ['1.7.0']}
+        fs.readJsonSync(v).should.eql {latest: '', installed: ['1.7.0']}
 
         fs.unlinkSync v
 

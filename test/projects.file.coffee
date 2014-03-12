@@ -71,3 +71,18 @@ describe 'Project file Instance', ->
         f.setInitialFileData()
 
         (-> f.removeProject("project 1")).should.throw Error
+
+
+    it 'can get a project by name', ->
+        f = new file
+        f.readFile = ->
+        f.writeFile = ->
+        f.setInitialFileData()
+
+        proj =
+            name: "project 1"
+            path: "fake/path"
+
+        f.filedata.projects.push proj
+
+        f.getProject("project 1").should.eql proj

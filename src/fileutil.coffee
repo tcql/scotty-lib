@@ -1,6 +1,4 @@
-fs = require 'fs'
-jsonfile = require 'jsonfile'
-
+fs = require 'fs-extra'
 
 ###
  * Exists as a base class to be used by other
@@ -14,7 +12,7 @@ class exports.fileutil
             @writeFile()
 
         if force or not @filedata
-            @filedata = jsonfile.readFileSync(@filepath)
+            @filedata = fs.readJsonSync(@filepath)
 
         return @filedata
 
@@ -23,7 +21,7 @@ class exports.fileutil
         if not @filedata
             @setInitialFileData()
 
-        jsonfile.writeFileSync(@filepath, @filedata)
+        fs.outputJsonSync(@filepath, @filedata)
 
 
     ###

@@ -4,7 +4,6 @@
     "github": "^0.1.14",
     "semver": "^2.2.1",
     "coffee-script": "^1.7.1",
-    "jsonfile": "^1.1.1",
     "request": "^2.34.0",
     "tar": "^0.1.19",
     "zlib": "^1.0.5",
