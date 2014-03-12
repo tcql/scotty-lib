@@ -1,29 +1,9 @@
-jsonfile = require 'jsonfile'
-fs = require 'fs'
+fileutil = require('../fileutil').fileutil
 
-class exports.file
+
+class exports.file extends fileutil
 
     constructor: (@filepath)->
-
-
-
-    readFile: (force = false)->
-        if not fs.existsSync(@filepath)
-            @writeFile()
-
-        if force or not @filedata
-            @filedata = jsonfile.readFileSync(@filepath)
-
-        return @filedata
-
-
-    writeFile: ()->
-        if not @filedata
-            @filedata =
-                latest: '',
-                installed: []
-
-        jsonfile.writeFileSync(@filepath, @filedata)
 
 
     getLatestInstalled: ()->
