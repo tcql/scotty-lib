@@ -86,3 +86,17 @@ describe 'Version file Instance', ->
 
         fs.unlinkSync v
 
+
+    it 'should be able to check if version is installed', ->
+        v = './test/data/empty_versions.json'
+        fs.existsSync(v).should.equal false
+
+        f = new file v
+
+        f.addInstalled('1.0.0')
+        f.addInstalled('1.0.1')
+
+        f.isInstalled('1.0.0').should.equal true
+        f.isInstalled('1.0.2').should.equal false
+
+        fs.unlinkSync v

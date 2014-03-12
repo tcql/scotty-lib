@@ -29,7 +29,7 @@ describe 'Version fetcher Instance', ->
 
         f.raw_versions = [
             name: '1.1.6'
-            zipball_url: 'this is a url!'
+            tarball_url: 'this is a url!'
         ]
 
         f.getUrlForVersion('1.1.6').should.equal 'this is a url!'
