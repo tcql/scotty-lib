@@ -31,7 +31,7 @@ describe 'Project file Instance', ->
         f.setInitialFileData()
 
         project =
-            metadata: ()->
+            getMetadata: ()->
                 return {name: "project 1", version: "1.1.6"}
 
         f.addProject(project)
@@ -45,7 +45,7 @@ describe 'Project file Instance', ->
         f.setInitialFileData()
 
         project =
-            metadata: ()->
+            getMetadata: ()->
                 return {name: "project 1", version: "1.1.6"}
 
         f.addProject(project)

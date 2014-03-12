@@ -20,12 +20,12 @@ class exports.file extends fileutil
 
     addProject: (project)->
         @readFile()
-        data = project.metadata()
+        data = project.getMetadata()
 
         if @projectExists(data.name)
             throw Error("A Project named #{data.name} already exists")
 
-        @filedata.projects.push project.metadata()
+        @filedata.projects.push project.getMetadata()
         @writeFile()
 
 
@@ -42,10 +42,29 @@ class exports.file extends fileutil
 
 
     getProjectIndex: (name)->
+        @readFile()
         for p,i in @filedata.projects
             return i if name is p.name
 
         return false
+
+    getProject: (name)->
+        ind = @getProjectIndex(name)
+
+        if ind isnt false
+            return @filedata.projects[ind]
+
+        return false
+
+
+    updateProject: (project)->
+        meta = project.getMetadata()
+        ind = @getProjectIndex(meta.name)
+
+        @filedata.projects[ind] = project.getMetadata()
+
+        @writeFile()
+
 
 
     projectExists: (name)->
