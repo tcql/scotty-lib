@@ -1,11 +1,13 @@
 semver = require('semver')
-
-# request = require('request')
-# zip     = require('adm-zip')
+request = require('request')
+fs = require('fs')
+zlib = require('zlib')
+tar = require('tar')
 
 class exports.fetcher
 
     # Takes instance of GitHubApi (from npmjs.org/package/github)
+    # and an instance of scotty-lib/src/versions/checker
     constructor: (@api, @checker)->
         @available_versions = []
         @raw_versions = []
@@ -47,6 +49,7 @@ class exports.fetcher
     getRawVersions: ()->
         return @raw_versions
 
+
     ###
      * getUrlForVersion(version) -> String
      *     - version(String): zipball url for the given version
@@ -61,7 +64,8 @@ class exports.fetcher
         if versions.length is 0
             throw Error("No such version")
 
-        return versions[0].zipball_url
+        return versions[0].tarball_url
+
 
     ###
      * setVersions(versions) -> null
@@ -71,6 +75,7 @@ class exports.fetcher
     ###
     setVersions: (versions)->
         @available_versions = versions
+
 
     ###
      * getLatest() -> string
@@ -84,19 +89,24 @@ class exports.fetcher
         return @checker.getLatest(@available_versions)
 
 
-    download: (version, on_complete = ->)->
+    ###
+     * download(version, destination, on_complete) -> request
+     *     - version (String): version to download
+     *     - destination (String): path to extract
+     *     - on_complete (Function): callback to run once tar has been downloaded
+     *
+    ###
+    download: (version, destination, on_complete = ->)->
         url = @getUrlForVersion(version)
+        options = { headers: { "User-Agent": 'test/1.0' } }
 
+        req = request(url, options)
+        req.pipe(zlib.createGunzip())
+            .pipe(tar.Extract({ path: "#{destination}/#{version}", strip: 1}));
 
-        # url     = 'https://github.com/photonstorm/phaser/archive/'+version+'.zip'
-        # file    = base.getTempPath()+'/'+version+".zip"
-        # dest    = base.getEnginePath()
+        req.on 'end', ()=>
+            on_complete("#{destination}/#{version}")
 
-        # req     = request(url)
-        # req.pipe(fs.createWriteStream(file))
+        return req
 
-        # req.on 'end', ()=>
-        #     on_complete()
-
-        # return req
 

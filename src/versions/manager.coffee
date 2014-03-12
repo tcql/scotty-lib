@@ -14,7 +14,7 @@ class exports.manager
     constructor: (@options)->
         api = new github
             version: "3.0.0",
-            debug: true,
+            debug: @options.debug ? false,
             protocol: "https",
 
         @checker = new checker
