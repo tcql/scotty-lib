@@ -19,7 +19,7 @@ class exports.manager
 
         @checker = new checker
         @fetcher = new fetcher api, @checker
-        @local = new local @options.version_file
+        @local = new local(@options.version_file)
 
 
     setChecker: (checker)->
@@ -34,19 +34,22 @@ class exports.manager
         @fetcher = fetcher
 
 
-    downloadLatestVersionIfNecessary: (cb)->
-        @checker.setLatestInstalled(@local.getLatestInstalled())
+    _download: (version, cb)->
+        request = @fetcher.download version, @options.phaser_path, cb
+        request.on 'end', ()=>
+            @local.addInstalled version
 
-        @fetcher.fetchLatestVersion (fetch, version)=>
-            @checker.setLatest(version)
-
-            if not @checker.isLatestInstalled()
-                @fetcher.downloadVersion version, ()=>
-                    @local.setLatestInstalled(version)
-                    @local.addInstalled(version)
-                    cb(true)
-            else
-                cb(false)
+            if @checker.isLatest(version, @fetcher.getVersions())
+                @local.setLatestInstalled(version)
 
 
-    getActualInstalledVersion: ()->
+    forceDownload: (version, cb)->
+        @_download(version, cb)
+
+
+    download: (version, cb)->
+        if @local.isInstalled(version)
+            return
+
+        @_download(version, cb)
+

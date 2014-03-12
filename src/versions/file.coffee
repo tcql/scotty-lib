@@ -48,3 +48,12 @@ class exports.file
 
             @writeFile()
 
+
+    isInstalled: (version)->
+        @readFile()
+
+        if version in @filedata.installed
+            return true
+
+        return false
+

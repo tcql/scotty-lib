@@ -10,6 +10,10 @@ class exports.checker
 
         return semver.maxSatisfying(versions, ">0.0.0")
 
+
+    isLatest: (version, versions)->
+        return @getLatest(versions) is @cleanVersion(version)
+
     cleanVersion: (orig_version)->
         version = orig_version.replace /[^0-9\.]/g, ''
 
