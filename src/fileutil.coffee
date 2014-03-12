@@ -1,6 +1,11 @@
 fs = require 'fs'
 jsonfile = require 'jsonfile'
 
+
+###
+ * Exists as a base class to be used by other
+ * components of scotty
+###
 class exports.fileutil
 
 
@@ -16,9 +21,15 @@ class exports.fileutil
 
     writeFile: ()->
         if not @filedata
-            @filedata =
-                latest: '',
-                installed: []
+            @setInitialFileData()
 
         jsonfile.writeFileSync(@filepath, @filedata)
 
+
+    ###
+     * setInitialFileData() -> null
+     *
+     * Sets the default data for a newly instantiated file
+    ###
+    setInitialFileData: ()->
+        @filedata = {}

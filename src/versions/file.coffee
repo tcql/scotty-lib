@@ -37,3 +37,8 @@ class exports.file extends fileutil
 
         return false
 
+
+    setInitialFileData: ()->
+        @filedata =
+            latest: ""
+            installed: []
