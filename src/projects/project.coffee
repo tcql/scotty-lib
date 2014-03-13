@@ -12,26 +12,48 @@ class exports.project
 
     createOnDiskByCopy:  (location = null, template)->
         location = location ? @metadata.path
-        fs.copySync(template, location)
-        @metadata.path = location
+
+        if fs.existsSync(template)
+            fs.copySync(template, location)
+            @metadata.path = location
+
+            return true
+
+        return false
+
 
 
     createOnDisk: (location = null)->
         location = location ? @metadata.path
-        fs.mkdirSync(location)
-        @metadata.path = location
+
+        if not fs.existsSync(location)
+            fs.mkdirSync(location)
+            @metadata.path = location
+
+            return true
+
+        return false
 
 
     moveOnDisk: (location)->
-        fs.renameSync(@metadata.path, location)
-        @metadata.path = location
+        if fs.existsSync(@metadata.path) and not fs.existsSync(location)
+            fs.renameSync(@metadata.path, location)
+            @metadata.path = location
+
+            return true
+
+        return false
 
 
     installPhaser: (version = null)->
         version = version ? @metadata.phaser_version
-
         phaser = "#{@paths.phaser_path}/#{version}"
-        fs.copySync(phaser, @getPhaserDestination())
+
+        if fs.existsSync(phaser)
+            fs.copySync(phaser, @getPhaserDestination())
+            return true
+
+        return false
 
 
     getPhaserDestination: ()->
@@ -42,4 +64,8 @@ class exports.project
 
 
     deleteOnDisk: ()->
-        fs.removeSync(@metadata.path)
+        if fs.existsSync(@metadata.path)
+            fs.removeSync(@metadata.path)
+            return true
+
+        return false

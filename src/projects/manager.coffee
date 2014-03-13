@@ -12,9 +12,10 @@ class exports.manager
             return false
 
         p = new project(options, @options)
-        p.createOnDisk()
-        p.installPhaser()
-        @file.addProject(p)
+
+        if p.createOnDisk()
+            p.installPhaser()
+            @file.addProject(p)
 
         return p
 
@@ -25,8 +26,8 @@ class exports.manager
         if not proj
             throw Error("Cannot move project #{name}; it does not exist")
 
-        proj.moveOnDisk(dest)
-        @file.updateProject(proj)
+        if proj.moveOnDisk(dest)
+            @file.updateProject(proj)
 
 
     getProject: (name)->
@@ -39,5 +40,5 @@ class exports.manager
     deleteProject: (name)->
         project = @getProject(name)
 
-        @file.removeProject(name)
-        project.deleteOnDisk()
+        if project.deleteOnDisk()
+            @file.removeProject(name)
