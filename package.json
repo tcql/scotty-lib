@@ -12,6 +12,9 @@
     "chai": "*",
     "mocha": "*"
   },
+  "main": {
+    "main.js"
+  }
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script"
   }
