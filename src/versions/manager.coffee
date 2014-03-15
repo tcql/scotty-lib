@@ -11,7 +11,7 @@ github = require('github')
 
 class exports.manager
 
-    constructor: (@options)->
+    constructor: (@options = {})->
         api = new github
             version: "3.0.0",
             debug: @options.debug ? false,
