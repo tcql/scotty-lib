@@ -1,5 +1,5 @@
 Collection
-======
+==========
 
 
 Collection is a utility class for dealing with arbitrary lists of data. It can:
