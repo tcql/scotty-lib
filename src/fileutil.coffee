@@ -6,6 +6,8 @@ fs = require 'fs-extra'
 ###
 class exports.fileutil
 
+    constructor: (@filepath)->
+
 
     read: (force = false)->
         if not fs.existsSync(@filepath)
@@ -38,6 +40,12 @@ class exports.fileutil
 
         fs.outputJsonSync(@filepath, @filedata)
 
+    getData: ()->
+        return @filedata
+
+
+    setData: (data)->
+        @filedata = data
 
     ###
      * setInitialFileData() -> null

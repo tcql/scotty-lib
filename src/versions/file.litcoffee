@@ -7,7 +7,6 @@ stored by default at `~/.scotty/versions.json`
 
     class exports.file extends fileutil
 
-        constructor: (@filepath)->
 
 The metadata stored includes the `latest` installed version, `available` versions and `installed` versions.
 `available` versions are made up of objects that contain both the `name` and `url` of the available
