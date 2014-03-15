@@ -49,7 +49,7 @@ class exports.manager
             @available.setCollection(versions)
 
             file_vers = @available.map (elem)->
-                return {name: elem.name, tarball_url: elem.tarball_url}
+                return {name: elem.name, url: elem.url}
 
             @file.set("available", file_vers.getCollection())
             @file.write()
@@ -57,33 +57,44 @@ class exports.manager
             cb(@available)
 
 
+    _checkExisting: (version)->
+        try
+            existing = @installed.get("name", version)
+            return true
+        catch error
+            return false
 
-    _download: (version, cb)->
+
+    _download: (version, force, cb)->
         item = @available.get("name", version)
-        url = item.tarball_url
+        url = item.url
 
-        onend = (ver)=>
+        exists = @_checkExisting(version)
+
+        if exists and not force
+            return
+
+        request = @fetcher.download version, url, @options.phaser_path, ()=>
+            return @_afterDownload(exists, version, cb)
+
+
+    _afterDownload: (exists, version, cb)=>
+        if not exists
             @installed.add version
             @file.set("installed", @installed.getCollection())
 
-            if @checker.isLatest(version, @installed.getCollection())
-                @file.set("latest", version)
+        if @checker.isLatest(version, @installed.getCollection())
+            @file.set("latest", version)
 
-            @file.write()
+        @file.write()
 
-            cb(ver)
-
-        request = @fetcher.download version, url, @options.phaser_path, onend
+        cb(version)
 
 
     forceDownload: (version, cb)->
-        @_download(version, cb)
+        @_download(version, true, cb)
 
 
     download: (version, cb)->
-        try
-            item = @installed.get("name", version)
-            return
-        catch error
-            @_download(version, cb)
+        @_download(version, false, cb)
 

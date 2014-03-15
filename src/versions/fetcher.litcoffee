@@ -25,6 +25,9 @@ The data returned contains version names and tarball urls
                 user: "photonstorm"
                 repo: "phaser",
                 (err, versions)=>
+                    for version in versions
+                       version.url = version.tarball_url
+
                     cb(@, versions)
 
 
@@ -35,7 +38,6 @@ by providing a `version`, a `url` (for the tarball), a `destination`, and an `on
 Versions are automatically unzipped
 
         download: (version, url, destination, on_complete = ->)->
-            #url = @getUrlForVersion(version)
             options = { headers: { "User-Agent": 'test/1.0' } }
 
             req = request(url, options)
