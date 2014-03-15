@@ -16,6 +16,7 @@ class exports.fileutil
 
         return @filedata
 
+
     get: (property)->
         return @filedata[property]
 
@@ -29,6 +30,7 @@ class exports.fileutil
             @filedata[property] = []
 
         @filedata[property].push value
+
 
     write: ()->
         if not @filedata
