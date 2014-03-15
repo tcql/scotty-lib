@@ -45,5 +45,33 @@ describe 'Collection Instance', ->
         c.getCollection().should.eql ["e", "l", "l", "o"]
 
 
+    it 'can filter a collection', ->
+        c = new collection ["a", "aa", "b", "bb"]
+        result = c.filter (elem)->
+            return elem is "a"
+
+        result.getCollection().should.eql ["a"]
+
+
+    it 'should create a new collection when using map', ->
+        orig = [1..5]
+        c = new collection orig
+
+        c2 = c.map (elem)->
+            return elem*2
+
+        c2.getCollection().should.eql [2,4,6,8,10]
+        c.getCollection().should.eql orig
+
+
+    it 'should modify the collection when using transform', ->
+        orig = [1..5]
+        c = new collection orig
+
+        c.transform (elem)->
+            return elem*2
+
+        c.getCollection().should.eql [2,4,6,8,10]
+
 
 
