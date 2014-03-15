@@ -48,3 +48,10 @@ describe 'fileutil Instance', ->
         f.set("a", "e")
 
         f.get("a").should.equal "e"
+
+
+    it 'can set the filedata', ->
+        f = new fileutil
+        data = {"a": "b", "c": "d"}
+        f.setData data
+        f.getData().should.equal data
