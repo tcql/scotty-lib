@@ -57,6 +57,26 @@ class exports.manager
             cb(@available)
 
 
+    forceDownload: (version, cb)->
+        @_download(version, true, cb)
+
+
+    download: (version, cb)->
+        @_download(version, false, cb)
+
+
+
+    getVersionData: ()->
+        return @available.map (elem)=>
+            try
+                item = @installed.get("name", elem.name)
+                installed = true
+            catch error
+                installed = false
+
+            return {name: elem.name, installed: installed}
+
+
     _checkExisting: (version)->
         try
             existing = @installed.get("name", version)
@@ -90,11 +110,4 @@ class exports.manager
 
         cb(version)
 
-
-    forceDownload: (version, cb)->
-        @_download(version, true, cb)
-
-
-    download: (version, cb)->
-        @_download(version, false, cb)
 
