@@ -10,7 +10,7 @@ github.
 
     class exports.fetcher
 
-Fetcher uses the Github api class provided by [node-github](npmjs.org/package/github)
+Fetcher uses the Github api class provided by [node-github](http://npmjs.org/package/github)
 
         constructor: (@api)->
 
