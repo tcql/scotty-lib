@@ -11,8 +11,8 @@ describe 'Project file Instance', ->
     it 'can return project names', ->
         f = new file
 
-        f.readFile = ->
-        f.writeFile = ->
+        f.read = ->
+        f.write = ->
         f.setInitialFileData()
 
         f.filedata.projects.push
@@ -26,8 +26,8 @@ describe 'Project file Instance', ->
     it 'can add a project', ->
         f = new file
 
-        f.readFile = ->
-        f.writeFile = ->
+        f.read = ->
+        f.write = ->
         f.setInitialFileData()
 
         project =
@@ -40,8 +40,8 @@ describe 'Project file Instance', ->
 
     it 'will throw an error if you try adding a project whose name is already in use', ->
         f = new file
-        f.readFile = ->
-        f.writeFile = ->
+        f.read = ->
+        f.write = ->
         f.setInitialFileData()
 
         project =
@@ -54,8 +54,8 @@ describe 'Project file Instance', ->
 
     it 'can remove a project', ->
         f = new file
-        f.readFile = ->
-        f.writeFile = ->
+        f.read = ->
+        f.write = ->
         f.setInitialFileData()
 
         f.filedata.projects.push {name: "project 1"}
@@ -66,8 +66,8 @@ describe 'Project file Instance', ->
 
     it 'will throw an error if you try to remvoe a nonexistant a project', ->
         f = new file
-        f.readFile = ->
-        f.writeFile = ->
+        f.read = ->
+        f.write = ->
         f.setInitialFileData()
 
         (-> f.removeProject("project 1")).should.throw Error
@@ -75,8 +75,8 @@ describe 'Project file Instance', ->
 
     it 'can get a project by name', ->
         f = new file
-        f.readFile = ->
-        f.writeFile = ->
+        f.read = ->
+        f.write = ->
         f.setInitialFileData()
 
         proj =

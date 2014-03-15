@@ -74,4 +74,9 @@ describe 'Collection Instance', ->
         c.getCollection().should.eql [2,4,6,8,10]
 
 
+    it 'can add a single item to the collection', ->
+        c = new collection
 
+        c.add({"name": "Fred"})
+
+        c.getCollection().should.eql [{"name": "Fred"}]

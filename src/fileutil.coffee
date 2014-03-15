@@ -7,17 +7,30 @@ fs = require 'fs-extra'
 class exports.fileutil
 
 
-    readFile: (force = false)->
+    read: (force = false)->
         if not fs.existsSync(@filepath)
-            @writeFile()
+            @write()
 
         if force or not @filedata
             @filedata = fs.readJsonSync(@filepath)
 
         return @filedata
 
+    get: (property)->
+        return @filedata[property]
 
-    writeFile: ()->
+
+    set: (property, value)->
+        @filedata[property] = value
+
+
+    appendTo: (property, value)->
+        if not @filedata[property]?
+            @filedata[property] = []
+
+        @filedata[property].push value
+
+    write: ()->
         if not @filedata
             @setInitialFileData()
 

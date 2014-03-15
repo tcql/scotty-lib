@@ -1,6 +1,7 @@
-fetcher = require('./fetcher').fetcher
-checker = require('./checker').checker
-local = require('./file').file
+{fetcher} = require('./fetcher')
+{checker} = require('./checker')
+{file} = require('./file')
+{collection} = require("../collection")
 
 github = require('github')
 
@@ -19,31 +20,60 @@ class exports.manager
 
         @checker = new checker
         @fetcher = new fetcher api, @checker
-        @local = new local(@options.version_file)
+        @file   = new file(@options.version_file)
+
+        @initializeCollections()
+
+
+    initializeCollections: ()->
+        @file.read()
+
+        @installed = new collection @file.get("installed")
+        @available = new collection @file.get("available")
 
 
     setChecker: (checker)->
         @checker = check
 
 
-    setLocalFile: (local)->
-        @local = local
+    setFile: (local)->
+        @file = local
 
 
     setFetcher: (fetcher)->
         @fetcher = fetcher
 
 
-    _download: (version, cb)->
-        onend = (ver)=>
-            if @checker.isLatest(version, @fetcher.getVersions())
-                @local.setLatestInstalled(version)
+    fetch: (cb)->
+        @fetcher.fetchVersions (fetcher, versions)=>
+            @available.setCollection(versions)
 
-            @local.addInstalled version
+            file_vers = @available.map (elem)->
+                return {name: elem.name, tarball_url: elem.tarball_url}
+
+            @file.set("available", file_vers.getCollection())
+            @file.write()
+
+            cb(@available)
+
+
+
+    _download: (version, cb)->
+        item = @available.get("name", version)
+        url = item.tarball_url
+
+        onend = (ver)=>
+            @installed.add version
+            @file.set("installed", @installed.getCollection())
+
+            if @checker.isLatest(version, @installed.getCollection())
+                @file.set("latest", version)
+
+            @file.write()
 
             cb(ver)
 
-        request = @fetcher.download version, @options.phaser_path, onend
+        request = @fetcher.download version, url, @options.phaser_path, onend
 
 
     forceDownload: (version, cb)->
@@ -51,8 +81,9 @@ class exports.manager
 
 
     download: (version, cb)->
-        if @local.isInstalled(version)
+        try
+            item = @installed.get("name", version)
             return
-
-        @_download(version, cb)
+        catch error
+            @_download(version, cb)
 

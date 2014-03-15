@@ -25,3 +25,12 @@ describe 'Version checker Instance', ->
         (-> v.cleanVersion('')).should.throw Error
         (-> v.cleanVersion('1.1.1.1')).should.throw Error
 
+
+    it 'should be able to confirm if a version is the latest', ->
+        v = new checker
+        v.isLatest('1.1.6', ['2.0.0', '1.1.6', '1.1.5']).should.eql false
+        v.isLatest('2.0.0', ['2.0.0', '1.1.6', '1.1.5']).should.eql true
+
+    it 'should clean before checking if a version is the latest', ->
+        v = new checker
+        v.isLatest('1', ['0.9.5', '0.9', '1.0.0']).should.eql true

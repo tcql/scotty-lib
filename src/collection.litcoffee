@@ -28,7 +28,7 @@ array values that are objects or arrays will affect the same objects in the coll
             @setCollection(collection)
 
 
-        setCollection: (collection)->
+        setCollection: (collection = [])->
             @collection = collection.slice()
 
 
@@ -36,6 +36,14 @@ The underlying Collection array may be accessed and modified externally.
 
         getCollection: ()->
             return @collection
+
+
+Adding items
+------------
+Items can be added to the Collection by calling `add(item)`
+
+        add: (item)->
+            @collection.push(item)
 
 
 Retrieving items
@@ -58,11 +66,15 @@ collection.get("name", "Fred")
                 if v is value
                     return element
 
+            throw new Error("No element exists matching {#{attr}:#{value}}")
+
 `getAt(index)` can be used to retrieve an element by its index in the underlying Collection array.
 
         getAt: (index)->
             if @collection[index]?
                 return @collection[index]
+
+            throw new Error("No element exists at that index")
 
 
 

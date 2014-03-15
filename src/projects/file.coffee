@@ -5,7 +5,7 @@ class exports.file extends fileutil
     constructor: (@filepath)->
 
     getProjectNames: ()->
-        @readFile()
+        @read()
 
         projects = []
         for p in @filedata.projects
@@ -19,18 +19,18 @@ class exports.file extends fileutil
 
 
     addProject: (project)->
-        @readFile()
+        @read()
         data = project.getMetadata()
 
         if @projectExists(data.name)
             throw Error("A Project named #{data.name} already exists")
 
         @filedata.projects.push project.getMetadata()
-        @writeFile()
+        @write()
 
 
     removeProject: (name)->
-        @readFile()
+        @read()
 
         ind = @getProjectIndex(name)
         if ind is false
@@ -38,11 +38,11 @@ class exports.file extends fileutil
 
         @filedata.projects.splice(ind, 1)
 
-        @writeFile()
+        @write()
 
 
     getProjectIndex: (name)->
-        @readFile()
+        @read()
         for p,i in @filedata.projects
             return i if name is p.name
 
@@ -63,7 +63,7 @@ class exports.file extends fileutil
 
         @filedata.projects[ind] = project.getMetadata()
 
-        @writeFile()
+        @write()
 
 
 
