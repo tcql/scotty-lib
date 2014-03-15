@@ -8,7 +8,7 @@
     "request": "^2.34.0",
     "tar": "^0.1.19",
     "fs-extra": "^0.8.1",
-    "xtend": "^2.1.2"
+    "extend": "^1.2.1"
   },
   "devDependencies": {
     "chai": "*",

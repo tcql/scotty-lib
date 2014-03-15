@@ -10,9 +10,9 @@ Collection is a utility class for dealing with arbitrary lists of data. It can:
 * Transform items - edits collection in place
 * Filter items - returns a new collection including only items matching the callback
 
-> **Note**: Map will create a deep copy of all objects, using xtend
+> **Note**: Map will create a deep copy of all objects, using extend
 
-    xtend = require('xtend')
+    extend = require('extend')
 
     class exports.collection
 
@@ -108,7 +108,8 @@ by calling the `transformer` on it. Elements will be deep copied before alterati
 
         map: (transformer)->
             results = []
-            for i in xtend(@collection)
+
+            for i in extend(@collection)
                 results.push transformer(i)
 
             return new exports.collection(results)
