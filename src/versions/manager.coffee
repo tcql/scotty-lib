@@ -37,10 +37,12 @@ class exports.manager
     _download: (version, cb)->
         request = @fetcher.download version, @options.phaser_path, cb
         request.on 'end', ()=>
-            @local.addInstalled version
 
             if @checker.isLatest(version, @fetcher.getVersions())
                 @local.setLatestInstalled(version)
+
+            @local.addInstalled version
+
 
 
     forceDownload: (version, cb)->
