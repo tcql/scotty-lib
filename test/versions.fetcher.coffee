@@ -19,7 +19,7 @@ describe 'Version fetcher Instance', ->
 
         f = new fetcher api
 
-        cb = (fetcher, versions)->
+        cb = (versions)->
             versions.should.eql version_return
 
         f.fetchVersions(cb)

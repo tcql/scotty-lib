@@ -4,7 +4,11 @@
 class exports.manager
 
     constructor: (@options)->
+
+    boot: ()->
         @file = new file(@options.project_file)
+
+
 
 
     createProject: (options)->

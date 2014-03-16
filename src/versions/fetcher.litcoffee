@@ -28,7 +28,7 @@ The data returned contains version names and tarball urls
                     for version in versions
                        version.url = version.tarball_url
 
-                    cb(@, versions)
+                    cb(versions)
 
 
 Downloading a phaser version

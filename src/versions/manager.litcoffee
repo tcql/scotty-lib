@@ -33,6 +33,8 @@ Initialization
 A new instance of the Github api, provided by [node-github](http://npmjs.org/package/github) is
 initialized, to be used by the Fetcher instance.
 
+
+        boot: ()->
             api = new github
                 version: "3.0.0",
                 debug: @options.debug ? false,
@@ -67,22 +69,28 @@ Retrieving Version data
 Using the Fetcher instance, Manager communicates with Github and retrieves the list
 of available phaser engine versions.
 
-            @fetcher.fetchVersions (fetcher, versions)=>
+            @fetcher.fetchVersions (versions)=>
 
 Once the version list request returns, Manager uses the version data to populate the `@available` collection.
 
                 @available.setCollection(versions)
 
+                @_updateAvailableInFile()
+
+                cb(@available)
+
 The version list is also reformatted and written out to the File instance so we can easily get cached version data
 without re-contacting Github every time we need an available versions list.
 
-                file_vers = @available.map (elem)->
-                    return {name: elem.name, url: elem.url}
+        _updateAvailableInFile: ()->
+            # clean up the available data for writing to the versions file
+            file_vers = @available.map (elem)->
+                return {name: elem.name, url: elem.url}
 
-                @file.set("available", file_vers.getCollection())
-                @file.write()
+            # write
+            @file.set("available", file_vers.getCollection())
+            @file.write()
 
-                cb(@available)
 
 
 Downloading Versions
@@ -161,6 +169,9 @@ that will present a list of versions that can be downloaded
                 return {name: elem.name, installed: installed}
 
 
+Setters
+-------
+Methods for externally setting Checker, File, and Fetcher instances
 
         setChecker: (checker)->
             @checker = check

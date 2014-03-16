@@ -27,6 +27,9 @@ home directory and initializes scotty components with default options
             @versions = new versions @options
             @projects = new projects @options
 
+            @versions.boot()
+            @projects.boot()
+
 
 Locations
 ---------
