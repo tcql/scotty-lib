@@ -1,4 +1,5 @@
 fs = require('fs-extra')
+path = require('path')
 
 class exports.project
 
@@ -12,6 +13,7 @@ class exports.project
 
     createOnDiskByCopy:  (location = null, template)->
         location = location ? @metadata.path
+        location = path.resolve(location)
 
         if fs.existsSync(template)
             fs.copySync(template, location)
@@ -26,6 +28,8 @@ class exports.project
     createOnDisk: (location = null)->
         location = location ? @metadata.path
 
+        location = path.resolve(location)
+
         if not fs.existsSync(location)
             fs.mkdirSync(location)
             @metadata.path = location
@@ -36,6 +40,8 @@ class exports.project
 
 
     moveOnDisk: (location)->
+        location = path.resolve(location)
+
         if fs.existsSync(@metadata.path) and not fs.existsSync(location)
             fs.renameSync(@metadata.path, location)
             @metadata.path = location
