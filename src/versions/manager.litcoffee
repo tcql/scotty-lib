@@ -87,35 +87,20 @@ without re-contacting Github every time we need an available versions list.
 
 Downloading Versions
 --------------------
+There are two options for downloading:
 
+`forceDownload` will redownload version, even if it is installed.
 
         forceDownload: (version, cb)->
             @_download(version, true, cb)
 
+`download` will only download the requested version if it has not been installed.
 
         download: (version, cb)->
             @_download(version, false, cb)
 
-
-
-        getVersionData: ()->
-            return @available.map (elem)=>
-                try
-                    item = @installed.get("name", elem.name)
-                    installed = true
-                catch error
-                    installed = false
-
-                return {name: elem.name, installed: installed}
-
-
-        _checkExisting: (version)->
-            try
-                existing = @installed.get("name", version)
-                return true
-            catch error
-                return false
-
+The download process for both methods is handled in the same way, the only difference being that `download`
+triggers a check for version existence before trying to dowload.
 
         _download: (version, force, cb)->
             item = @available.get("name", version)
@@ -130,6 +115,20 @@ Downloading Versions
                 return @_afterDownload(exists, version, cb)
 
 
+The check for version existence is done by querying the `@installed` collection.
+
+        _checkExisting: (version)->
+            try
+                existing = @installed.get("name", version)
+                return true
+            catch error
+                return false
+
+
+After Download
+--------------
+Once a version has been downloaded, the Manager updates the version File and `@installed` collection.
+
         _afterDownload: (exists, version, cb)=>
             if not exists
                 @installed.add version
@@ -140,7 +139,27 @@ Downloading Versions
 
             @file.write()
 
+Finally, the callback supplied by the user during the `download` or `forceDownload` method is called
+
             cb(version)
+
+
+Retrieving version information
+------------------------------
+The version manager also provides a method for retrieving formatted version data, namely what versions
+are available for download and whether or not they have been installed yet. This is useful for frontends
+that will present a list of versions that can be downloaded
+
+        getVersionData: ()->
+            return @available.map (elem)=>
+                try
+                    item = @installed.get("name", elem.name)
+                    installed = true
+                catch error
+                    installed = false
+
+                return {name: elem.name, installed: installed}
+
 
 
         setChecker: (checker)->
