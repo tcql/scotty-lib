@@ -1,7 +1,7 @@
 chai = require('chai')
 should = chai.should()
 
-{collection} = require '../src/collection'
+{collection} = require '../src/utils/collection'
 
 describe 'Collection Instance', ->
 

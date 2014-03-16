@@ -1,14 +1,14 @@
     fs = require 'fs-extra'
 
 
-Fileutil
+File
 ========
-The Fileutil class is a utility class for scotty which supports reading and writing json files
+The File class is a utility class for scotty which supports reading and writing json files
 including an intermediary data object for quick modification and reading.
 
-    class exports.fileutil
+    class exports.file
 
-Fileutil is initialized with a path to json file to be read from / written to.
+File is initialized with a path to json file to be read from / written to.
 
         constructor: (@filepath)->
 
@@ -43,7 +43,7 @@ set by `setInitialFileData` before the json file will be written.
 
             fs.outputJsonSync(@filepath, @filedata)
 
-Classes which extend the Fileutil class will typically reimplement `setInitialFileData()` to provide
+Classes which extend the File class will typically reimplement `setInitialFileData()` to provide
 a starting structure for the json file.
 
         setInitialFileData: ()->

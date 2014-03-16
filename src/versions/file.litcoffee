@@ -1,4 +1,4 @@
-    fileutil = require('../fileutil').fileutil
+    fileutil = require('../utils/file').file
 
 Versions File
 =============

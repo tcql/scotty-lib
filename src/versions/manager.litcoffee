@@ -1,7 +1,7 @@
     {fetcher} = require('./fetcher')
     {checker} = require('./checker')
     {file} = require('./file')
-    {collection} = require("../collection")
+    {collection} = require("../utils/collection")
 
     github = require('github')
 
