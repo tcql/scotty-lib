@@ -22,10 +22,7 @@ class exports.file extends fileutil
         @read()
         data = project.getMetadata()
 
-        if @projectExists(data.name)
-            throw Error("A Project named #{data.name} already exists")
-
-        @filedata.projects.push project.getMetadata()
+        @filedata.projects.push data
         @write()
 
 

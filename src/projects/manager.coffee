@@ -1,5 +1,6 @@
-{file} = require('./file')
-{project} = require('./project')
+{file} = require './file'
+{project} = require './project'
+{collection} = require '../utils/collection'
 
 class exports.manager
 
@@ -8,33 +9,32 @@ class exports.manager
     boot: ()->
         @file = new file(@options.project_file)
 
+        @file.read()
+
+        # initialize project collection
+        @projects = new collection @file.get("projects")
+        @projects.transform (elem)=>
+            return new project(elem, @options)
+
 
 
 
     createProject: (options)->
-        if @file.projectExists(options.name)
+        if @projects.get("name", options.name)
             return false
 
         p = new project(options, @options)
 
         if p.createOnDisk()
             p.installPhaser()
+            @projects.add(p)
             @file.addProject(p)
 
         return p
 
 
-    getProjects: ()->
-        projects = []
-        for project in @file.get("projects")
-            projects.push(new project(project, @options))
-
-        return projects
-
-
-
     moveProject: (name, dest)->
-        proj = @getProject(name)
+        proj = @projects.get("name", name)
 
         if not proj
             throw Error("Cannot move project #{name}; it does not exist")
@@ -43,15 +43,9 @@ class exports.manager
             @file.updateProject(proj)
 
 
-    getProject: (name)->
-        opts = @file.getProject(name)
-
-        if opts
-            return new project(opts, @options)
-
-
     deleteProject: (name)->
-        project = @getProject(name)
+        project = @projects.get("name", name)
 
         if project.deleteOnDisk()
+            @projects.remove(project)
             @file.removeProject(name)

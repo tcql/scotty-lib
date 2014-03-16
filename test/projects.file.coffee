@@ -38,20 +38,6 @@ describe 'Project file Instance', ->
         f.filedata.projects.should.eql [{name: "project 1", version: "1.1.6"}]
 
 
-    it 'will throw an error if you try adding a project whose name is already in use', ->
-        f = new file
-        f.read = ->
-        f.write = ->
-        f.setInitialFileData()
-
-        project =
-            getMetadata: ()->
-                return {name: "project 1", version: "1.1.6"}
-
-        f.addProject(project)
-        (-> f.addProject(project)).should.throw Error
-
-
     it 'can remove a project', ->
         f = new file
         f.read = ->
