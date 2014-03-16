@@ -24,6 +24,15 @@ class exports.manager
         return p
 
 
+    getProjects: ()->
+        projects = []
+        for project in @file.get("projects")
+            projects.push(new project(project, @options))
+
+        return projects
+
+
+
     moveProject: (name, dest)->
         proj = @getProject(name)
 
