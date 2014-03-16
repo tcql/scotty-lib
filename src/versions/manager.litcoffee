@@ -127,8 +127,7 @@ The check for version existence is done by querying the `@installed` collection.
 
         _checkExisting: (version)->
             existing = @installed.get("name", version)
-
-            if not existing?
+            if existing?
                 return true
 
             return false
@@ -163,10 +162,10 @@ that will present a list of versions that can be downloaded
             return @available.map (elem)=>
                 item = @installed.get("name", elem.name)
 
-                if not item?
-                    installed = false
-                else
+                if item?
                     installed = true
+                else
+                    installed = false
 
                 return {name: elem.name, installed: installed}
 
