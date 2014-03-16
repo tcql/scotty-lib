@@ -1,5 +1,5 @@
 chai = require('chai')
-chai.should()
+should = chai.should()
 
 {collection} = require '../src/collection'
 
@@ -80,3 +80,10 @@ describe 'Collection Instance', ->
         c.add({"name": "Fred"})
 
         c.getCollection().should.eql [{"name": "Fred"}]
+
+
+    it 'should return null when getting items that dont exist', ->
+        c = new collection
+
+        should.equal c.get("name", "fake"), null
+        should.equal c.getAt(0), null

@@ -126,11 +126,12 @@ triggers a check for version existence before trying to dowload.
 The check for version existence is done by querying the `@installed` collection.
 
         _checkExisting: (version)->
-            try
-                existing = @installed.get("name", version)
+            existing = @installed.get("name", version)
+
+            if not existing?
                 return true
-            catch error
-                return false
+
+            return false
 
 
 After Download
@@ -160,11 +161,12 @@ that will present a list of versions that can be downloaded
 
         getVersionData: ()->
             return @available.map (elem)=>
-                try
-                    item = @installed.get("name", elem.name)
-                    installed = true
-                catch error
+                item = @installed.get("name", elem.name)
+
+                if not item?
                     installed = false
+                else
+                    installed = true
 
                 return {name: elem.name, installed: installed}
 

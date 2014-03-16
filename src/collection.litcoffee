@@ -66,7 +66,7 @@ collection.get("name", "Fred")
                 if v is value
                     return element
 
-            throw new Error("No element exists matching {#{attr}:#{value}}")
+            return null
 
 `getAt(index)` can be used to retrieve an element by its index in the underlying Collection array.
 
@@ -74,8 +74,7 @@ collection.get("name", "Fred")
             if @collection[index]?
                 return @collection[index]
 
-            throw new Error("No element exists at that index")
-
+            return null
 
 
 
