@@ -19,16 +19,21 @@ home directory and initializes scotty components with default options
         initialize: ()->
             @makeBaseDirectory()
 
+            @projects_db = new nedb
+                filename: @getProjectFile()
+                autoload: true
+
             @options =
-                version_file: @getVersionFile()
-                phaser_path: @getPhaserDirectory()
-                project_file: @getProjectFile()
+                phaser_path:    @getPhaserDirectory()
+                version_file:   @getVersionFile()
+                project_file:   @getProjectFile()
+                autoload:       true
 
-            @versions = new versions @options
-            @projects = new projects @options
+            # @versions = new versions @database, @options
+            # @projects = new projects @database, @options
 
-            @versions.boot()
-            @projects.boot()
+            # @versions.boot()
+            # @projects.boot()
 
 
 Locations
@@ -52,15 +57,15 @@ Within the **.scotty** folder, three primary elements are stored:
         getPhaserDirectory: ()->
             return @getBaseDirectory()+"/engine"
 
-* The **versions.json** file
+* The **versions.db** file
 
         getVersionFile: ()->
-            return @getBaseDirectory()+"/versions.json"
+            return @getBaseDirectory()+"/versions.db"
 
-* The **projects.json** file
+* The **projects.db** file
 
         getProjectFile: ()->
-            return @getBaseDirectory()+"/projects.json"
+            return @getBaseDirectory()+"/projects.db"
 
 
 During initialization, the base directory is created if it does not exist

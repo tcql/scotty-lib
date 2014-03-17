@@ -8,7 +8,9 @@
     "request": "^2.34.0",
     "tar": "^0.1.19",
     "fs-extra": "^0.8.1",
-    "extend": "^1.2.1"
+    "extend": "^1.2.1",
+    "nedb": "^0.10.4",
+    "async": "^0.2.10"
   },
   "devDependencies": {
     "chai": "*",

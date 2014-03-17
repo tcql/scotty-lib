@@ -3,7 +3,7 @@
 Version Checker
 ===============
 Checker is a class for checking versions. It handles cleaning version numbers to proper semver
-standards, and can tell you if a version is the latest installed version
+standards.
 
     class exports.checker
 
@@ -11,10 +11,8 @@ Creating clean semver tags
 --------------------------
 Unfortunately, the list of versions we retrieve from github (via the `Fetcher` class)
 does not contain strictly valid semver tag names. The version checker will clean tags
-before doing work any checking on them by
-
-* Stripping non-numeric characters. Dots are retained
-* Splitting the version on dots and filling in missing incremental or minor numbers with zeros
+before doing work any checking on them by first stripping non-numeric characters (except dots),
+and then splitting the version on dots and filling in missing incremental or minor numbers with zeros.
 
 
         cleanVersion: (orig_version)->
