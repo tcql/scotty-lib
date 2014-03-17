@@ -19,9 +19,9 @@ home directory and initializes scotty components with default options
         initialize: ()->
             @makeBaseDirectory()
 
-            @projects_db = new nedb
-                filename: @getProjectFile()
-                autoload: true
+            # @projects_db = new nedb
+            #     filename: @getProjectFile()
+            #     autoload: true
 
             @options =
                 phaser_path:    @getPhaserDirectory()
@@ -29,10 +29,10 @@ home directory and initializes scotty components with default options
                 project_file:   @getProjectFile()
                 autoload:       true
 
-            # @versions = new versions @database, @options
+            @versions = new versions @options
             # @projects = new projects @database, @options
 
-            # @versions.boot()
+            @versions.boot()
             # @projects.boot()
 
 

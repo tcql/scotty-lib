@@ -91,7 +91,7 @@ which uses semver to compare version numbers.
 #### Checking if a version is installed
 
         isVersionInstalled: (name, callback = ->)->
-            @db.count {name: name}, (err, count)=>
+            @db.count {name: name, installed: true}, (err, count)=>
                 if count > 0
                     callback(true)
                 else
@@ -105,8 +105,7 @@ allows us to find out if a version has been installed locally or not.
 
         _insertNew:(version, callback)=>
             self = @
-            console.log callback
-            @db.findOne {name: version}, (err, doc)->
+            @db.findOne {name: version.name}, (err, doc)->
                 if not doc?
                     record = self._formatRecord(version)
                     self.db.insert record, (err)->
