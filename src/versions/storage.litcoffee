@@ -51,7 +51,7 @@ allows us to mark versions as installed.
 
 #### Getting a version
 
-        getVersion: (version, callback = ->)->
+        get: (version, callback = ->)->
             @db.findOne {name: version}, callback
 
 allows us to find a version by name.

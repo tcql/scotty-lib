@@ -1,36 +1,31 @@
-{file} = require './file'
 {project} = require './project'
-{collection} = require '../utils/collection'
+{storage} = require './storage'
+nedb = require 'nedb'
 
 class exports.manager
 
     constructor: (@options)->
 
     boot: ()->
-        @file = new file(@options.project_file)
+         @_projectdb = new nedb
+            filename: @options.project_file
+            autoload: @options.autoload
 
-        @file.read()
-
-        # initialize project collection
-        @projects = new collection @file.get("projects")
-        @projects.transform (elem)=>
-            return new project(elem, @options)
+        @projects = new storage @_projectdb
 
 
+    createProject: (options, callback = ->)->
+        @projects.nameInUse options.name, (exists)=>
+            if exists
+                return callback("A project with that name already exists")
+
+                # todo: maybe get rid of project class?
+                # could be all handled as part of the Storage class
+                p = new project(options, @options)
+                p.createOnDisk()
+                p.installPhaser()
 
 
-    createProject: (options)->
-        if @projects.get("name", options.name)?
-            return false
-
-        p = new project(options, @options)
-
-        p.createOnDisk()
-        p.installPhaser()
-        @projects.add(p)
-        @file.addProject(p)
-
-        return p
 
 
     moveProject: (name, dest)->

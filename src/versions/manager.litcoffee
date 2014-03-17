@@ -91,7 +91,7 @@ The download process for both methods is handled in the same way, the only diffe
 triggers a check for version existence before trying to dowload.
 
         _download: (version, callback)->
-            @versions.getVersion version, (err, ver)=>
+            @versions.get version, (err, ver)=>
                 if not ver
                     callback(false)
 
