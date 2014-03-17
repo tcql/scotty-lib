@@ -5,8 +5,6 @@ class exports.project
 
     constructor: (@metadata = {}, @paths)->
 
-
-
     getMetadata: ()->
         return @metadata
 

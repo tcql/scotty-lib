@@ -20,15 +20,15 @@ class exports.manager
 
 
     createProject: (options)->
-        if @projects.get("name", options.name)
+        if @projects.get("name", options.name)?
             return false
 
         p = new project(options, @options)
 
-        if p.createOnDisk()
-            p.installPhaser()
-            @projects.add(p)
-            @file.addProject(p)
+        p.createOnDisk()
+        p.installPhaser()
+        @projects.add(p)
+        @file.addProject(p)
 
         return p
 
