@@ -81,7 +81,7 @@ There are two options for downloading:
 `download` will only download the requested version if it has not been installed.
 
         download: (version, callback)->
-            @versions.isVersionInstalled version, (exists)=>
+            @versions.isInstalled version, (exists)=>
                 if not exists
                     @_download(version, callback)
                 else
@@ -96,7 +96,7 @@ triggers a check for version existence before trying to dowload.
                     callback(false)
 
                 request = @fetcher.download version, ver.url, @options.phaser_path, ()=>
-                    @versions.installVersion(version, callback)
+                    @versions.install(version, callback)
 
 
 Setters

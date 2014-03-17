@@ -43,7 +43,7 @@ these by only inserting new versions it doesn't already know aboout (see `_inser
 
 #### Installing
 
-        installVersion:(version, callback = ->)->
+        install:(version, callback = ->)->
             @db.update {name: version}, { $set: {installed: true } }, callback
 
 allows us to mark versions as installed.
@@ -90,7 +90,7 @@ which uses semver to compare version numbers.
 
 #### Checking if a version is installed
 
-        isVersionInstalled: (name, callback = ->)->
+        isInstalled: (name, callback = ->)->
             @db.count {name: name, installed: true}, (err, count)=>
                 if count > 0
                     callback(true)
