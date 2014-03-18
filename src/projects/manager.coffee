@@ -15,29 +15,34 @@ class exports.manager
         @projects = new storage @_projectdb
 
 
-    createProject: (project, options, callback = ->)->
-        @projects.nameInUse options.name, (exists)=>
-            if exists
-                return callback("A project with that name already exists")
+    create: (project, options, callback = ->)->
+        @projects.nameInUse project.name, (exists)=>
+            callback(["A project with that name already exists"], null) if exists
 
-                @_project_files.createOnDisk project
-                @projects.add project, callback
+            @_project_files.createOnDisk project
+            @_project_files.installPhaser project
 
-
-
-    moveProject: (name, dest)->
-        proj = @projects.get("name", name)
-
-        if not proj
-            throw Error("Cannot move project #{name}; it does not exist")
-
-        if proj.moveOnDisk(dest)
-            @file.updateProject(proj)
+            @projects.add project, callback
 
 
-    deleteProject: (name)->
-        project = @projects.get("name", name)
+    update: (id, project, callback = ->)->
+        @projects.getById id, (err, old)=>
+            callback(err, null) if err
 
-        if project.deleteOnDisk()
-            @projects.remove(project)
-            @file.removeProject(name)
+            if old.path != project.path
+                @_project_files.moveOnDisk old, project
+
+            @projects.update project, callback
+
+
+    delete: (id, callback = ->)->
+        @projects.getById id, (err, project)=>
+            callback(err, null) if err
+
+            @projects.deleteById id, (err, numDel)=>
+                callback(err, null) if err
+
+                if numDel > 0
+                    @_project_files.deleteOnDisk project
+
+                callback(null, project)

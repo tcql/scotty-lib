@@ -9,9 +9,11 @@
             @db.find {}, callback
 
 
-        get: (name, callback = ->)->
+        getByName: (name, callback = ->)->
             @db.findOne {name: name}, callback
 
+        getById: (id, callback = ->)->
+            @db.findOne {_id: id}, callback
 
         getBy: (query = {}, callback = ->)->
             @db.findOne query, callback
@@ -29,4 +31,8 @@
             @db.insert project, callback
 
         update: (project, callback = ->)->
-            @db.update {_id: project._id }, project, callback
+            @db.update {_id: project._id }, project, {}, callback
+
+
+        deleteById: (id, callback = ->)->
+            @db.remove { _id: id }, {}, callback

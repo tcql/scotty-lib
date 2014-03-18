@@ -2,7 +2,7 @@ fs = require('fs-extra')
 path = require('path')
 
 class exports.project
-    constructor: (@options)->
+    constructor: (@paths)->
 
     createOnDiskByCopy:  (project, template)->
         location = project.path
@@ -31,13 +31,11 @@ class exports.project
         return false
 
 
-    moveOnDisk: (project)->
+    moveOnDisk: (original, project)->
         location = path.resolve(project.path)
 
-        if fs.existsSync(project.path) and not fs.existsSync(location)
-            fs.renameSync(project.path, location)
-            project.path = location
-
+        if fs.existsSync(original.path) and not fs.existsSync(location)
+            fs.renameSync(original.path, location)
             return true
 
         return false
