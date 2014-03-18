@@ -23,3 +23,10 @@
                     callback(true)
                 else
                     callback(false)
+
+
+        add: (project, callback = ->)->
+            @db.insert project, callback
+
+        update: (project, callback = ->)->
+            @db.update {_id: project._id }, project, callback

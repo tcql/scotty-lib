@@ -2,20 +2,15 @@ fs = require('fs-extra')
 path = require('path')
 
 class exports.project
+    constructor: (@options)->
 
-    constructor: (@metadata = {}, @paths)->
-
-    getMetadata: ()->
-        return @metadata
-
-
-    createOnDiskByCopy:  (location = null, template)->
-        location = location ? @metadata.path
+    createOnDiskByCopy:  (project, template)->
+        location = project.path
         location = path.resolve(location)
 
         if fs.existsSync(template)
             fs.copySync(template, location)
-            @metadata.path = location
+            project.path = location
 
             return true
 
@@ -23,53 +18,47 @@ class exports.project
 
 
 
-    createOnDisk: (location = null)->
-        location = location ? @metadata.path
-
+    createOnDisk: (project)->
+        location = project.path
         location = path.resolve(location)
 
         if not fs.existsSync(location)
             fs.mkdirSync(location)
-            @metadata.path = location
+            location.path = location
 
             return true
 
         return false
 
 
-    moveOnDisk: (location)->
-        location = path.resolve(location)
+    moveOnDisk: (project)->
+        location = path.resolve(project.path)
 
-        if fs.existsSync(@metadata.path) and not fs.existsSync(location)
-            fs.renameSync(@metadata.path, location)
-            @metadata.path = location
+        if fs.existsSync(project.path) and not fs.existsSync(location)
+            fs.renameSync(project.path, location)
+            project.path = location
 
             return true
 
         return false
 
 
-    installPhaser: (version = null)->
-        version = version ? @metadata.phaser_version
+    installPhaser: (project, version = null)->
+        version = version ? project.phaser_version
         phaser = "#{@paths.phaser_path}/#{version}"
 
+        phaser_dest = project.phaser_path ? project.path+"/phaser"
+
         if fs.existsSync(phaser)
-            fs.copySync(phaser, @getPhaserDestination())
+            fs.copySync(phaser, phaser_dest)
             return true
 
         return false
 
 
-    getPhaserDestination: ()->
-        if not @metadata.phaser_path
-            @metadata.phaser_path = @metadata.path+"/phaser"
-
-        return @metadata.phaser_path
-
-
-    deleteOnDisk: ()->
-        if fs.existsSync(@metadata.path)
-            fs.removeSync(@metadata.path)
+    deleteOnDisk: (project)->
+        if fs.existsSync(project.path)
+            fs.removeSync(project.path)
             return true
 
         return false

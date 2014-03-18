@@ -68,7 +68,7 @@ allows us to find only the installed versions.
 #### Getting all versions
 
         getAll: (callback = ->)->
-            @db.find {}, callback
+            @db.find({}).sort({name: -1}).exec callback
 
 allows us to get a list of every available version.
 

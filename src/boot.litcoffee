@@ -30,10 +30,10 @@ home directory and initializes scotty components with default options
                 autoload:       true
 
             @versions = new versions @options
-            # @projects = new projects @database, @options
+            @projects = new projects @options
 
             @versions.boot()
-            # @projects.boot()
+            @projects.boot()
 
 
 Locations
