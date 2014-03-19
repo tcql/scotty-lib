@@ -8,10 +8,11 @@ class exports.project
         location = project.path
         location = path.resolve(location)
 
+        fs.removeSync(location)
+
         if fs.existsSync(template)
             fs.copySync(template, location)
             project.path = location
-
             return true
 
         return false

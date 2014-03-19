@@ -24,13 +24,18 @@ home directory and initializes scotty components with default options
             #     autoload: true
 
             @options =
+                template_path:  @getTemplateDirectory()
                 phaser_path:    @getPhaserDirectory()
                 version_file:   @getVersionFile()
                 project_file:   @getProjectFile()
                 autoload:       true
 
+
+            @installTemplates()
+
             @versions = new versions @options
             @projects = new projects @options
+
 
             @versions.boot()
             @projects.boot()
@@ -82,5 +87,12 @@ Scotty also can show users the phaser example code.
         getExamplesDirectory: ()->
             return @getBaseDirectory()+"/phaser-examples"
 
+Scotty supports (or rather, will support...) project templates.
+
+        getTemplateDirectory: ()->
+            return @getBaseDirectory()+"/templates"
 
 
+        installTemplates: ()->
+            if not fs.existsSync(@getTemplateDirectory())
+                fs.copySync __dirname+"/../templates", @getTemplateDirectory()

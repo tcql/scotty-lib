@@ -19,7 +19,9 @@ class exports.manager
         @projects.nameInUse project.name, (exists)=>
             callback(["A project with that name already exists"], null) if exists
 
-            @_project_files.createOnDisk project
+            console.log @getDefaultTemplate()
+
+            @_project_files.createOnDiskByCopy project, @getDefaultTemplate()
             @_project_files.installPhaser project
 
             @projects.add project, callback
@@ -51,3 +53,7 @@ class exports.manager
                     @_project_files.deleteOnDisk project
 
                 callback(null, project)
+
+
+    getDefaultTemplate: ()=>
+        return @options.template_path+"/hello_phaser"
