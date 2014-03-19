@@ -31,7 +31,10 @@
             @db.insert project, callback
 
         update: (project, callback = ->)->
-            @db.update {_id: project._id }, project, {}, callback
+            id = project._id
+            delete project["_id"]
+
+            @db.update {_id: id }, { $set: project}, {}, callback
 
 
         deleteById: (id, callback = ->)->

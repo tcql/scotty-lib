@@ -33,9 +33,10 @@ class exports.project
 
     moveOnDisk: (original, project)->
         location = path.resolve(project.path)
+        fs.removeSync(location)
 
-        if fs.existsSync(original.path) and not fs.existsSync(location)
-            fs.renameSync(original.path, location)
+        if fs.existsSync(original.path)
+            res = fs.renameSync original.path, location
             return true
 
         return false
@@ -49,9 +50,15 @@ class exports.project
 
         if fs.existsSync(phaser)
             fs.copySync(phaser, phaser_dest)
+            project.phaser_path = phaser_dest
             return true
 
         return false
+
+
+    uninstallPhaser: (project)->
+        fs.removeSync(project.phaser_path)
+
 
 
     deleteOnDisk: (project)->

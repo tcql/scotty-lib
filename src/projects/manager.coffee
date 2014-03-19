@@ -27,10 +27,15 @@ class exports.manager
 
     update: (id, project, callback = ->)->
         @projects.getById id, (err, old)=>
-            callback(err, null) if err
+            return callback(err, null) if err
 
-            if old.path != project.path
+            if old.path isnt project.path
                 @_project_files.moveOnDisk old, project
+
+            if old.phaser_version isnt project.phaser_version
+                @_project_files.uninstallPhaser old
+                @_project_files.installPhaser project
+
 
             @projects.update project, callback
 
