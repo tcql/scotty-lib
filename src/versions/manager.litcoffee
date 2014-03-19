@@ -92,8 +92,7 @@ triggers a check for version existence before trying to dowload.
 
         _download: (version, callback)->
             @versions.get version, (err, ver)=>
-                if not ver
-                    callback(false)
+                return callback(false) if not ver
 
                 request = @fetcher.download version, ver.url, @options.phaser_path, ()=>
                     @versions.install(version, callback)
@@ -113,3 +112,8 @@ Methods for externally setting Checker, File, and Fetcher instances
 
         setFetcher: (fetcher)->
             @fetcher = fetcher
+
+
+        setDb: (db)->
+            @_versiondb = db
+            @versions.db = db

@@ -1,47 +1,62 @@
-# chai = require('chai')
-# chai.should()
+fs = require 'fs-extra'
+nedb = require 'nedb'
+chai = require 'chai'
+chai.should()
 
-# {manager} = require '../src/versions/manager'
+{manager} = require '../src/versions/manager'
 
-# describe 'Version manager Instance', ->
+describe 'Version manager Instance', ->
 
-#     it 'should be instantiable', ->
-#         m = new manager {}
-
-
-#     it 'should fetch version lists and update the version file', ->
-#         m = new manager {}
-
-#         called = false
-
-#         # Disable this method so we can test that separately later
-#         m._updateAvailableInFile = ()->
-
-#         fetched_versions = [
-#             {name: "1.0.0", url: "abcd"}
-#             {name: "1.2.0", url: "efgh"}
-#         ]
-
-#         ###
-#          * Available versions collection that will be
-#          * called after the versions are fetched
-#         ###
-#         m.available =
-#             setCollection: (versions)->
-#                 versions.should.eql fetched_versions
+    it 'should be instantiable', ->
+        m = new manager {}
 
 
-#         # Mock the Fetcher
-#         m.setFetcher
-#             fetchVersions: (cb)->
-#                 cb(fetched_versions)
+    # This is an integration test; it actually hits github
+    it 'should fetch versions from github and write to the neDB', ->
+        m = new manager {}
+        m.boot()
 
-#         m.fetch (available)->
-#             called = true
-#             m.available.should.eql available
+        # use a non-file based DB
+        db = new nedb
+        m.setDb db
 
-#         # sanity test to make sure the
-#         # callback actually got called
-#         called.should.equal true
+        m.fetch (versions)=>
+            db.count {}, (err, ct)->
+                ct.should.equal versions.length
 
+
+    it 'should not download if version exists during `download`', ->
+        m = new manager {}
+        m.versions =
+            isInstalled: (version, callback)->
+                # Version already exists
+                callback true
+
+        called = false
+        m._download = ()->
+            called = true
+
+        m.download '1.2.3', (result)->
+            result.should.equal false
+
+            # double check _download wasn't called
+            called.should.equal false
+
+
+    it 'should download if version exists during `download`', ->
+        m = new manager {}
+        m.versions =
+            isInstalled: (version, callback)->
+                # Version doesn't exist
+                callback false
+
+        called = false
+        m._download = ()->
+            called = true
+
+        m.download '1.2.3', (result)->
+            result.should.equal true
+
+            # double check _download wasn't called
+            called.should.equal true
 
