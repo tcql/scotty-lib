@@ -77,5 +77,10 @@ During initialization, the base directory is created if it does not exist
                 fs.mkdirSync(dir)
                 fs.mkdirSync(@getPhaserDirectory())
 
+Scotty also can show users the phaser example code.
+
+        getExamplesDirectory: ()->
+            return @getBaseDirectory()+"/phaser-examples"
+
 
 
