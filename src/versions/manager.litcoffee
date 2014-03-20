@@ -35,13 +35,15 @@ initialized, to be used by the Fetcher instance.
 
 
         boot: ()->
-            api = new github
-                version: "3.0.0",
-                debug: @options.debug ? false,
-                protocol: "https",
+            # Todo: remove this. It's just for testing-ish stuff
+            if not @api
+                @api = new github
+                    version: "3.0.0",
+                    debug: @options.debug ? false,
+                    protocol: "https",
 
             @checker = new checker
-            @fetcher = new fetcher api, @checker
+            @fetcher = new fetcher @api, @checker
 
 An NeDB which maintains the **versions.db** file, to track version data is also initialized.
 
@@ -117,3 +119,6 @@ Methods for externally setting Checker, File, and Fetcher instances
         setDb: (db)->
             @_versiondb = db
             @versions.db = db
+
+        setApi: (api)->
+            @api = api

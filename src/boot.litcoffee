@@ -1,7 +1,9 @@
 
     fs = require('fs-extra')
+    github = require('github')
     versions = require("./versions/manager").manager
     projects = require("./projects/manager").manager
+    {examples} = require "./examples"
 
 Scotty Boot
 ===========
@@ -24,17 +26,26 @@ home directory and initializes scotty components with default options
             #     autoload: true
 
             @options =
+                examples_path:  @getExamplesDirectory()
                 template_path:  @getTemplateDirectory()
                 phaser_path:    @getPhaserDirectory()
                 version_file:   @getVersionFile()
                 project_file:   @getProjectFile()
                 autoload:       true
 
-
             @installTemplates()
 
+            @api = new github
+                version: "3.0.0",
+                debug: @options.debug ? false,
+                protocol: "https"
+
             @versions = new versions @options
+            @versions.setApi @api
             @projects = new projects @options
+            @examples = new examples @options
+
+            # install phaser examples
 
 
             @versions.boot()

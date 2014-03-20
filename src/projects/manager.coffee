@@ -19,8 +19,6 @@ class exports.manager
         @projects.nameInUse project.name, (exists)=>
             callback(["A project with that name already exists"], null) if exists
 
-            console.log @getDefaultTemplate()
-
             @_project_files.createOnDiskByCopy project, @getDefaultTemplate()
             @_project_files.installPhaser project
 
