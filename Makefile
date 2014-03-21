@@ -1,4 +1,4 @@
-REPORTER = min
+REPORTER = spec
 WATCH = --watch
 
 test:
