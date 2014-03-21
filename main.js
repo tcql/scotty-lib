@@ -1,10 +1,9 @@
 
-require("coffee-script/register");
-exports.projectManager = require("./src/projects/manager").manager;
-exports.versionManager = require("./src/versions/manager").manager;
+exports.projectManager = require("./build/projects/manager").manager;
+exports.versionManager = require("./build/versions/manager").manager;
 
 exports.initialize = function() {
-    scotty = new (require("./src/boot").boot)
+    scotty = new (require("./build/boot").boot)
     scotty.initialize()
     return scotty
 };
