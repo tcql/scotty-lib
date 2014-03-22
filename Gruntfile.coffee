@@ -32,4 +32,4 @@ module.exports = (grunt)->
     grunt.loadNpmTasks('grunt-contrib-coffee');
 
 
-    grunt.registerTask "scotty:build", ["coffee", "uglify"]
+    grunt.registerTask "scotty:build", ["coffee"]#, "uglify"]

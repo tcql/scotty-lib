@@ -1,2 +1,91 @@
-/*! scotty-lib - v1.0.0 - 2014-03-20 */
-(function(){var examples,fs,github,projects,versions;fs=require("fs-extra"),github=require("github"),versions=require("./versions/manager").manager,projects=require("./projects/manager").manager,examples=require("./examples").examples,exports.boot=function(){function boot(){}return boot.prototype.initialize=function(){var _ref;return this.makeBaseDirectory(),this.options={examples_path:this.getExamplesDirectory(),template_path:this.getTemplateDirectory(),phaser_path:this.getPhaserDirectory(),version_file:this.getVersionFile(),project_file:this.getProjectFile(),autoload:!0},this.installTemplates(),this.api=new github({version:"3.0.0",debug:null!=(_ref=this.options.debug)?_ref:!1,protocol:"https"}),this.versions=new versions(this.options),this.versions.setApi(this.api),this.projects=new projects(this.options),this.examples=new examples(this.options),this.versions.boot(),this.projects.boot()},boot.prototype.getHomeDirectory=function(){return process.env.HOME||process.env.HOMEPATH||process.env.USERPROFILE},boot.prototype.getBaseDirectory=function(){return this.getHomeDirectory()+"/.scotty"},boot.prototype.getPhaserDirectory=function(){return this.getBaseDirectory()+"/engine"},boot.prototype.getVersionFile=function(){return this.getBaseDirectory()+"/versions.db"},boot.prototype.getProjectFile=function(){return this.getBaseDirectory()+"/projects.db"},boot.prototype.makeBaseDirectory=function(){var dir;return dir=this.getBaseDirectory(),fs.existsSync(dir)?void 0:(fs.mkdirSync(dir),fs.mkdirSync(this.getPhaserDirectory()))},boot.prototype.getExamplesDirectory=function(){return this.getBaseDirectory()+"/phaser-examples"},boot.prototype.getTemplateDirectory=function(){return this.getBaseDirectory()+"/templates"},boot.prototype.installTemplates=function(){return fs.existsSync(this.getTemplateDirectory())?void 0:fs.copySync(__dirname+"/../templates",this.getTemplateDirectory())},boot}()}).call(this);
+(function() {
+  var examples, fs, github, projects, versions;
+
+  fs = require('fs-extra');
+
+  github = require('github');
+
+  versions = require("./versions/manager").manager;
+
+  projects = require("./projects/manager").manager;
+
+  examples = require("./examples").examples;
+
+  exports.boot = (function() {
+    function boot() {}
+
+    boot.prototype.initialize = function() {
+      var _ref;
+      this.makeBaseDirectory();
+      this.options = {
+        examples_path: this.getExamplesDirectory(),
+        template_path: this.getTemplateDirectory(),
+        phaser_path: this.getPhaserDirectory(),
+        version_file: this.getVersionFile(),
+        project_file: this.getProjectFile(),
+        autoload: true
+      };
+      this.installTemplates();
+      this.api = new github({
+        version: "3.0.0",
+        debug: (_ref = this.options.debug) != null ? _ref : false,
+        protocol: "https"
+      });
+      this.versions = new versions(this.options);
+      this.versions.setApi(this.api);
+      this.projects = new projects(this.options);
+      this.examples = new examples(this.options);
+      this.versions.boot();
+      return this.projects.boot();
+    };
+
+    boot.prototype.getHomeDirectory = function() {
+      var path;
+      path = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+      return fs.realpathSync(path);
+    };
+
+    boot.prototype.getBaseDirectory = function() {
+      return this.getHomeDirectory() + "/.scotty";
+    };
+
+    boot.prototype.getPhaserDirectory = function() {
+      return this.getBaseDirectory() + "/engine";
+    };
+
+    boot.prototype.getVersionFile = function() {
+      return this.getBaseDirectory() + "/versions.db";
+    };
+
+    boot.prototype.getProjectFile = function() {
+      return this.getBaseDirectory() + "/projects.db";
+    };
+
+    boot.prototype.makeBaseDirectory = function() {
+      var dir;
+      dir = this.getBaseDirectory();
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+        return fs.mkdirSync(this.getPhaserDirectory());
+      }
+    };
+
+    boot.prototype.getExamplesDirectory = function() {
+      return this.getBaseDirectory() + "/phaser-examples";
+    };
+
+    boot.prototype.getTemplateDirectory = function() {
+      return this.getBaseDirectory() + "/templates";
+    };
+
+    boot.prototype.installTemplates = function() {
+      if (!fs.existsSync(this.getTemplateDirectory())) {
+        return fs.copySync(__dirname + "/../templates", this.getTemplateDirectory());
+      }
+    };
+
+    return boot;
+
+  })();
+
+}).call(this);

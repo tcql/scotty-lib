@@ -59,7 +59,8 @@ installed engine versions and project locations. The location is a subfolder of 
 home directory.
 
         getHomeDirectory: ()->
-            return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE
+            path = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE
+            return fs.realpathSync(path)
 
 
         getBaseDirectory: ()->

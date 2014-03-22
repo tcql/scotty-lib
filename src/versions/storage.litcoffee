@@ -60,7 +60,7 @@ allows us to find a version by name.
 #### Get installed version s
 
         getInstalled: (callback = ->)->
-            @db.find {"installed": true}, callback
+            @db.find({"installed": true}).sort({name: -1}).exec callback
 
 allows us to find only the installed versions.
 

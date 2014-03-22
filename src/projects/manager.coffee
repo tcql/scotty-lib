@@ -7,7 +7,6 @@ class exports.manager
     constructor: (@options)->
 
     boot: ()=>
-        console.log "Hiii"
         @_projectdb = new nedb
             filename: @options.project_file
             autoload: @options.autoload

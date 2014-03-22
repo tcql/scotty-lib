@@ -1,2 +1,137 @@
-/*! scotty-lib - v1.0.0 - 2014-03-20 */
-(function(){var async,__bind=function(fn,me){return function(){return fn.apply(me,arguments)}};async=require("async"),exports.storage=function(){function storage(db,checker){this.db=db,this.checker=checker,this._formatRecord=__bind(this._formatRecord,this),this._insertNew=__bind(this._insertNew,this)}return storage.prototype.syncVersionList=function(versions,callback){return null==callback&&(callback=function(){}),async.map(versions,this._insertNew.bind(this),function(){return function(err,results){return callback(versions,err,results)}}(this))},storage.prototype.install=function(version,callback){return null==callback&&(callback=function(){}),this.db.update({name:version},{$set:{installed:!0}},callback)},storage.prototype.get=function(version,callback){return null==callback&&(callback=function(){}),this.db.findOne({name:version},callback)},storage.prototype.getInstalled=function(callback){return null==callback&&(callback=function(){}),this.db.find({installed:!0},callback)},storage.prototype.getAll=function(callback){return null==callback&&(callback=function(){}),this.db.find({}).sort({name:-1}).exec(callback)},storage.prototype.getLatest=function(callback){return null==callback&&(callback=function(){}),this.db.find({},function(_this){return function(err,docs){var max,ver,vers,_i,_len;for(vers=[],_i=0,_len=docs.length;_len>_i;_i++)ver=docs[_i],vers.push(ver.clean);return max=_this.checker.getLatest(vers),_this.db.findOne({clean:max},callback)}}(this))},storage.prototype.isInstalled=function(name,callback){return null==callback&&(callback=function(){}),this.db.count({name:name,installed:!0},function(){return function(err,count){return callback(count>0?!0:!1)}}(this))},storage.prototype._insertNew=function(version,callback){var self;return self=this,this.db.findOne({name:version.name},function(err,doc){var record;return null==doc?(record=self._formatRecord(version),self.db.insert(record,function(err){return callback(err,record)})):callback(null,null)})},storage.prototype._formatRecord=function(version){return{name:version.name,installed:!1,url:version.tarball_url,clean:this.checker.cleanVersion(version.name)}},storage}()}).call(this);
+(function() {
+  var async,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  async = require('async');
+
+  exports.storage = (function() {
+    function storage(db, checker) {
+      this.db = db;
+      this.checker = checker;
+      this._formatRecord = __bind(this._formatRecord, this);
+      this._insertNew = __bind(this._insertNew, this);
+    }
+
+    storage.prototype.syncVersionList = function(versions, callback) {
+      if (callback == null) {
+        callback = function() {};
+      }
+      return async.map(versions, this._insertNew.bind(this), (function(_this) {
+        return function(err, results) {
+          return callback(versions, err, results);
+        };
+      })(this));
+    };
+
+    storage.prototype.install = function(version, callback) {
+      if (callback == null) {
+        callback = function() {};
+      }
+      return this.db.update({
+        name: version
+      }, {
+        $set: {
+          installed: true
+        }
+      }, callback);
+    };
+
+    storage.prototype.get = function(version, callback) {
+      if (callback == null) {
+        callback = function() {};
+      }
+      return this.db.findOne({
+        name: version
+      }, callback);
+    };
+
+    storage.prototype.getInstalled = function(callback) {
+      if (callback == null) {
+        callback = function() {};
+      }
+      return this.db.find({
+        "installed": true
+      }).sort({
+        name: -1
+      }).exec(callback);
+    };
+
+    storage.prototype.getAll = function(callback) {
+      if (callback == null) {
+        callback = function() {};
+      }
+      return this.db.find({}).sort({
+        name: -1
+      }).exec(callback);
+    };
+
+    storage.prototype.getLatest = function(callback) {
+      if (callback == null) {
+        callback = function() {};
+      }
+      return this.db.find({}, (function(_this) {
+        return function(err, docs) {
+          var max, ver, vers, _i, _len;
+          vers = [];
+          for (_i = 0, _len = docs.length; _i < _len; _i++) {
+            ver = docs[_i];
+            vers.push(ver.clean);
+          }
+          max = _this.checker.getLatest(vers);
+          return _this.db.findOne({
+            clean: max
+          }, callback);
+        };
+      })(this));
+    };
+
+    storage.prototype.isInstalled = function(name, callback) {
+      if (callback == null) {
+        callback = function() {};
+      }
+      return this.db.count({
+        name: name,
+        installed: true
+      }, (function(_this) {
+        return function(err, count) {
+          if (count > 0) {
+            return callback(true);
+          } else {
+            return callback(false);
+          }
+        };
+      })(this));
+    };
+
+    storage.prototype._insertNew = function(version, callback) {
+      var self;
+      self = this;
+      return this.db.findOne({
+        name: version.name
+      }, function(err, doc) {
+        var record;
+        if (doc == null) {
+          record = self._formatRecord(version);
+          return self.db.insert(record, function(err) {
+            return callback(err, record);
+          });
+        } else {
+          return callback(null, null);
+        }
+      });
+    };
+
+    storage.prototype._formatRecord = function(version) {
+      return {
+        name: version.name,
+        installed: false,
+        url: version.tarball_url,
+        clean: this.checker.cleanVersion(version.name)
+      };
+    };
+
+    return storage;
+
+  })();
+
+}).call(this);

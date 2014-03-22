@@ -1,2 +1,81 @@
-/*! scotty-lib - v1.0.0 - 2014-03-20 */
-(function(){var fs,path;fs=require("fs-extra"),path=require("path"),exports.project=function(){function project(paths){this.paths=paths}return project.prototype.createOnDiskByCopy=function(project,template){var location;return location=project.path,location=path.resolve(location),fs.removeSync(location),fs.existsSync(template)?(fs.copySync(template,location),project.path=location,!0):!1},project.prototype.createOnDisk=function(project){var location;return location=project.path,location=path.resolve(location),fs.existsSync(location)?!1:(fs.mkdirSync(location),location.path=location,!0)},project.prototype.moveOnDisk=function(original,project){var location,res;return location=path.resolve(project.path),fs.removeSync(location),fs.existsSync(original.path)?(res=fs.renameSync(original.path,location),!0):!1},project.prototype.installPhaser=function(project,version){var phaser,phaser_dest,_ref;return null==version&&(version=null),version=null!=version?version:project.phaser_version,phaser=""+this.paths.phaser_path+"/"+version,phaser_dest=null!=(_ref=project.phaser_path)?_ref:project.path+"/phaser",fs.existsSync(phaser)?(fs.copySync(phaser,phaser_dest),project.phaser_path=phaser_dest,!0):!1},project.prototype.uninstallPhaser=function(project){return fs.removeSync(project.phaser_path)},project.prototype.deleteOnDisk=function(project){return fs.existsSync(project.path)?(fs.removeSync(project.path),!0):!1},project}()}).call(this);
+(function() {
+  var fs, path;
+
+  fs = require('fs-extra');
+
+  path = require('path');
+
+  exports.project = (function() {
+    function project(paths) {
+      this.paths = paths;
+    }
+
+    project.prototype.createOnDiskByCopy = function(project, template) {
+      var location;
+      location = project.path;
+      location = path.resolve(location);
+      fs.removeSync(location);
+      if (fs.existsSync(template)) {
+        fs.copySync(template, location);
+        project.path = location;
+        return true;
+      }
+      return false;
+    };
+
+    project.prototype.createOnDisk = function(project) {
+      var location;
+      location = project.path;
+      location = path.resolve(location);
+      if (!fs.existsSync(location)) {
+        fs.mkdirSync(location);
+        location.path = location;
+        return true;
+      }
+      return false;
+    };
+
+    project.prototype.moveOnDisk = function(original, project) {
+      var location, res;
+      location = path.resolve(project.path);
+      fs.removeSync(location);
+      if (fs.existsSync(original.path)) {
+        res = fs.renameSync(original.path, location);
+        return true;
+      }
+      return false;
+    };
+
+    project.prototype.installPhaser = function(project, version) {
+      var phaser, phaser_dest, _ref;
+      if (version == null) {
+        version = null;
+      }
+      version = version != null ? version : project.phaser_version;
+      phaser = "" + this.paths.phaser_path + "/" + version;
+      phaser_dest = (_ref = project.phaser_path) != null ? _ref : project.path + "/phaser";
+      if (fs.existsSync(phaser)) {
+        fs.copySync(phaser, phaser_dest);
+        project.phaser_path = phaser_dest;
+        return true;
+      }
+      return false;
+    };
+
+    project.prototype.uninstallPhaser = function(project) {
+      return fs.removeSync(project.phaser_path);
+    };
+
+    project.prototype.deleteOnDisk = function(project) {
+      if (fs.existsSync(project.path)) {
+        fs.removeSync(project.path);
+        return true;
+      }
+      return false;
+    };
+
+    return project;
+
+  })();
+
+}).call(this);
