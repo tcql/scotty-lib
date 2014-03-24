@@ -1,9 +1,11 @@
 (function() {
-  var examples, fs, github, projects, versions;
+  var examples, fs, github, path, projects, versions;
 
   fs = require('fs-extra');
 
   github = require('github');
+
+  path = require('path-extra');
 
   versions = require("./versions/manager").manager;
 
@@ -40,13 +42,12 @@
     };
 
     boot.prototype.getHomeDirectory = function() {
-      var path;
       path = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
       return fs.realpathSync(path);
     };
 
     boot.prototype.getBaseDirectory = function() {
-      return this.getHomeDirectory() + "/.scotty";
+      return path.datadir("scotty");
     };
 
     boot.prototype.getPhaserDirectory = function() {

@@ -1,6 +1,7 @@
 
     fs = require('fs-extra')
     github = require('github')
+    path = require('path-extra')
     versions = require("./versions/manager").manager
     projects = require("./projects/manager").manager
     {examples} = require "./examples"
@@ -64,7 +65,7 @@ home directory.
 
 
         getBaseDirectory: ()->
-            return @getHomeDirectory()+"/.scotty"
+            return path.datadir("scotty")
 
 
 Within the **.scotty** folder, three primary elements are stored:
