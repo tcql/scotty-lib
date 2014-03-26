@@ -100,10 +100,8 @@ triggers a check for version existence before trying to dowload.
 
                 @versions.setInProgress(version)
 
-                request = @fetcher.download version, ver.url, @options.phaser_path, ()=>
+                request = @fetcher.download version, ver.url, @options.phaser_path, onProgress, ()=>
                     @versions.install(version, callback)
-
-                request.on 'progress', onProgress
 
 
 Setters

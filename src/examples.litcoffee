@@ -2,6 +2,7 @@
     zlib = require('zlib')
     tar = require('tar')
     fs = require('fs-extra')
+    progress = require('request-progress')
 
 Examples
 ========
@@ -16,7 +17,10 @@ Little class for handling code for fetching phaser example repository
             return fs.existsSync(@options.examples_path)
 
 
-        download: (on_complete = ->)->
+        download: (on_complete, on_progress)->
+            on_complete = on_complete ? ()->
+            on_progress = on_progress ? ()->
+
             dest = @options.examples_path
             fs.removeSync(dest)
 
@@ -24,12 +28,11 @@ Little class for handling code for fetching phaser example repository
 
             options = { headers: { "User-Agent": 'test/1.0' } }
 
-            req = request(url, options)
-            req.pipe(zlib.createGunzip())
+            req = progress(request(url, options))
+                .on 'progress', on_progress
+                .on 'end', on_complete
+                .pipe(zlib.createGunzip())
                 .pipe(tar.Extract({ path: "#{dest}", strip: 1}));
-
-            req.on 'end', ()=>
-                on_complete()
 
 
         # Todo, make configurable?

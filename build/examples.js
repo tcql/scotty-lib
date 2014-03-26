@@ -1,5 +1,5 @@
 (function() {
-  var fs, request, tar, zlib;
+  var fs, progress, request, tar, zlib;
 
   request = require('request');
 
@@ -8,6 +8,8 @@
   tar = require('tar');
 
   fs = require('fs-extra');
+
+  progress = require('request-progress');
 
   exports.examples = (function() {
     function examples(options) {
@@ -18,11 +20,10 @@
       return fs.existsSync(this.options.examples_path);
     };
 
-    examples.prototype.download = function(on_complete) {
+    examples.prototype.download = function(on_complete, on_progress) {
       var dest, options, req, url;
-      if (on_complete == null) {
-        on_complete = function() {};
-      }
+      on_complete = on_complete != null ? on_complete : function() {};
+      on_progress = on_progress != null ? on_progress : function() {};
       dest = this.options.examples_path;
       fs.removeSync(dest);
       url = this.getDownloadUrl();
@@ -31,16 +32,10 @@
           "User-Agent": 'test/1.0'
         }
       };
-      req = request(url, options);
-      req.pipe(zlib.createGunzip()).pipe(tar.Extract({
+      return req = progress(request(url, options)).on('progress', on_progress).on('end', on_complete).pipe(zlib.createGunzip()).pipe(tar.Extract({
         path: "" + dest,
         strip: 1
       }));
-      return req.on('end', (function(_this) {
-        return function() {
-          return on_complete();
-        };
-      })(this));
     };
 
     examples.prototype.getDownloadUrl = function() {

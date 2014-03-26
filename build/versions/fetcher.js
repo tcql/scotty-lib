@@ -33,26 +33,23 @@
       })(this));
     };
 
-    fetcher.prototype.download = function(version, url, destination, on_complete) {
+    fetcher.prototype.download = function(version, url, destination, on_progress, on_complete) {
       var options, req;
-      if (on_complete == null) {
-        on_complete = function() {};
-      }
+      on_complete = on_complete != null ? on_complete : function() {};
+      on_progress = on_progress != null ? on_progress : function() {};
       options = {
         headers: {
           "User-Agent": 'test/1.0'
         }
       };
-      req = progress(request(url, options));
-      req.pipe(zlib.createGunzip()).pipe(tar.Extract({
-        path: "" + destination + "/" + version,
-        strip: 1
-      }));
-      req.on('end', (function(_this) {
+      req = progress(request(url, options)).on('progress', on_progress).on('end', (function(_this) {
         return function() {
           return on_complete("" + destination + "/" + version);
         };
-      })(this));
+      })(this)).pipe(zlib.createGunzip()).pipe(tar.Extract({
+        path: "" + destination + "/" + version,
+        strip: 1
+      }));
       return req;
     };
 

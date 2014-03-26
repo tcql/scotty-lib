@@ -76,10 +76,9 @@
             return callback(false);
           }
           _this.versions.setInProgress(version);
-          request = _this.fetcher.download(version, ver.url, _this.options.phaser_path, function() {
+          return request = _this.fetcher.download(version, ver.url, _this.options.phaser_path, onProgress, function() {
             return _this.versions.install(version, callback);
           });
-          return request.on('progress', onProgress);
         };
       })(this));
     };

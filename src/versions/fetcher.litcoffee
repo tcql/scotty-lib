@@ -38,15 +38,19 @@ Fetcher can be used to download and extract a phaser version from github
 by providing a `version`, a `url` (for the tarball), a `destination`, and an `on_complete` callback.
 Versions are automatically unzipped
 
-        download: (version, url, destination, on_complete = ->)->
+        download: (version, url, destination, on_progress, on_complete) ->
+            on_complete = on_complete ? ()->
+            on_progress = on_progress ? ()->
+
             options = { headers: { "User-Agent": 'test/1.0' } }
 
             req = progress(request(url, options))
-            req.pipe(zlib.createGunzip())
+                .on 'progress', on_progress
+                .on 'end', ()=>
+                    on_complete("#{destination}/#{version}")
+                .pipe(zlib.createGunzip())
                 .pipe(tar.Extract({ path: "#{destination}/#{version}", strip: 1}));
 
-            req.on 'end', ()=>
-                on_complete("#{destination}/#{version}")
 
             return req
 
