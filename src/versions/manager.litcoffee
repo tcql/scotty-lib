@@ -53,6 +53,8 @@ An NeDB which maintains the **versions.db** file, to track version data is also 
 
             @versions = new storage @_versiondb, @checker
 
+            @versions.setNoneInProgress()
+
 
 Retrieving Version data
 -----------------------
@@ -95,6 +97,8 @@ triggers a check for version existence before trying to dowload.
         _download: (version, callback, onProgress = ->)->
             @versions.get version, (err, ver)=>
                 return callback(false) if not ver
+
+                @versions.setInProgress(version)
 
                 request = @fetcher.download version, ver.url, @options.phaser_path, ()=>
                     @versions.install(version, callback)

@@ -44,7 +44,7 @@ these by only inserting new versions it doesn't already know aboout (see `_inser
 #### Installing
 
         install:(version, callback = ->)->
-            @db.update {name: version}, { $set: {installed: true } }, callback
+            @db.update {name: version}, { $set: {installed: true, in_progress: false } }, callback
 
 allows us to mark versions as installed.
 
@@ -100,6 +100,18 @@ which uses semver to compare version numbers.
 allows us to find out if a version has been installed locally or not.
 
 
+#### Setting In progress
+
+When  a version download is started, the record should be marked
+as in progress
+
+        setInProgress: (version, callback = -> )->
+            @db.update {name: version}, { $set: {in_progress: true } }, callback
+
+
+        setNoneInProgress:(callback = -> )->
+            @db.update {}, { $set: {in_progress: false}}, {multi: true}, callback
+
 
 #### Internal methods
 
@@ -120,4 +132,5 @@ allows us to find out if a version has been installed locally or not.
                 installed: false,
                 url: version.tarball_url,
                 clean: @checker.cleanVersion(version.name)
+                in_progress: false
             }

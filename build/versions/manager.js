@@ -31,7 +31,8 @@
         filename: this.options.version_file,
         autoload: this.options.autoload
       });
-      return this.versions = new storage(this._versiondb, this.checker);
+      this.versions = new storage(this._versiondb, this.checker);
+      return this.versions.setNoneInProgress();
     };
 
     manager.prototype.fetch = function(callback) {
@@ -74,6 +75,7 @@
           if (!ver) {
             return callback(false);
           }
+          _this.versions.setInProgress(version);
           request = _this.fetcher.download(version, ver.url, _this.options.phaser_path, function() {
             return _this.versions.install(version, callback);
           });

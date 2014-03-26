@@ -31,7 +31,8 @@
         name: version
       }, {
         $set: {
-          installed: true
+          installed: true,
+          in_progress: false
         }
       }, callback);
     };
@@ -103,6 +104,32 @@
       })(this));
     };
 
+    storage.prototype.setInProgress = function(version, callback) {
+      if (callback == null) {
+        callback = function() {};
+      }
+      return this.db.update({
+        name: version
+      }, {
+        $set: {
+          in_progress: true
+        }
+      }, callback);
+    };
+
+    storage.prototype.setNoneInProgress = function(callback) {
+      if (callback == null) {
+        callback = function() {};
+      }
+      return this.db.update({}, {
+        $set: {
+          in_progress: false
+        }
+      }, {
+        multi: true
+      }, callback);
+    };
+
     storage.prototype._insertNew = function(version, callback) {
       var self;
       self = this;
@@ -126,7 +153,8 @@
         name: version.name,
         installed: false,
         url: version.tarball_url,
-        clean: this.checker.cleanVersion(version.name)
+        clean: this.checker.cleanVersion(version.name),
+        in_progress: false
       };
     };
 
