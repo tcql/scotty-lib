@@ -1,11 +1,13 @@
 (function() {
-  var request, tar, zlib;
+  var progress, request, tar, zlib;
 
   request = require('request');
 
   zlib = require('zlib');
 
   tar = require('tar');
+
+  progress = require('request-progress');
 
   exports.fetcher = (function() {
     function fetcher(api) {
@@ -41,7 +43,7 @@
           "User-Agent": 'test/1.0'
         }
       };
-      req = request(url, options);
+      req = progress(request(url, options));
       req.pipe(zlib.createGunzip()).pipe(tar.Extract({
         path: "" + destination + "/" + version,
         strip: 1

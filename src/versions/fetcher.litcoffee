@@ -2,6 +2,7 @@
     request = require('request')
     zlib = require('zlib')
     tar = require('tar')
+    progress = require('request-progress')
 
 Version Fetcher
 ===============
@@ -40,7 +41,7 @@ Versions are automatically unzipped
         download: (version, url, destination, on_complete = ->)->
             options = { headers: { "User-Agent": 'test/1.0' } }
 
-            req = request(url, options)
+            req = progress(request(url, options))
             req.pipe(zlib.createGunzip())
                 .pipe(tar.Extract({ path: "#{destination}/#{version}", strip: 1}));
 

@@ -77,27 +77,29 @@ There are two options for downloading:
 
 `forceDownload` will redownload version, even if it is installed.
 
-        forceDownload: (version, cb)->
-            @_download(version, cb)
+        forceDownload: (version, cb, onProgress = -> )->
+            @_download(version, cb, onProgress)
 
 `download` will only download the requested version if it has not been installed.
 
-        download: (version, callback)->
+        download: (version, callback, onProgress = ->)->
             @versions.isInstalled version, (exists)=>
                 if not exists
-                    @_download(version, callback)
+                    @_download(version, callback, onProgress)
                 else
                     callback(false)
 
 The download process for both methods is handled in the same way, the only difference being that `download`
 triggers a check for version existence before trying to dowload.
 
-        _download: (version, callback)->
+        _download: (version, callback, onProgress = ->)->
             @versions.get version, (err, ver)=>
                 return callback(false) if not ver
 
                 request = @fetcher.download version, ver.url, @options.phaser_path, ()=>
                     @versions.install(version, callback)
+
+                request.on 'progress', onProgress
 
 
 Setters

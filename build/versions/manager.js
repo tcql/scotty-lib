@@ -42,15 +42,21 @@
       })(this));
     };
 
-    manager.prototype.forceDownload = function(version, cb) {
-      return this._download(version, cb);
+    manager.prototype.forceDownload = function(version, cb, onProgress) {
+      if (onProgress == null) {
+        onProgress = function() {};
+      }
+      return this._download(version, cb, onProgress);
     };
 
-    manager.prototype.download = function(version, callback) {
+    manager.prototype.download = function(version, callback, onProgress) {
+      if (onProgress == null) {
+        onProgress = function() {};
+      }
       return this.versions.isInstalled(version, (function(_this) {
         return function(exists) {
           if (!exists) {
-            return _this._download(version, callback);
+            return _this._download(version, callback, onProgress);
           } else {
             return callback(false);
           }
@@ -58,16 +64,20 @@
       })(this));
     };
 
-    manager.prototype._download = function(version, callback) {
+    manager.prototype._download = function(version, callback, onProgress) {
+      if (onProgress == null) {
+        onProgress = function() {};
+      }
       return this.versions.get(version, (function(_this) {
         return function(err, ver) {
           var request;
           if (!ver) {
             return callback(false);
           }
-          return request = _this.fetcher.download(version, ver.url, _this.options.phaser_path, function() {
+          request = _this.fetcher.download(version, ver.url, _this.options.phaser_path, function() {
             return _this.versions.install(version, callback);
           });
+          return request.on('progress', onProgress);
         };
       })(this));
     };
