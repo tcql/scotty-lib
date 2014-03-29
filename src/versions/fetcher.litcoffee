@@ -27,7 +27,7 @@ The data returned contains version names and tarball urls
                 repo: "phaser",
                 (err, versions)=>
                     for version in versions
-                       version.url = version.tarball_url
+                       version.url = "https://github.com/photonstorm/phaser/archive/#{version.name}.tar.gz"
 
                     cb(versions)
 
@@ -42,7 +42,7 @@ Versions are automatically unzipped
             on_complete = on_complete ? ()->
             on_progress = on_progress ? ()->
 
-            options = { headers: { "User-Agent": 'test/1.0' } }
+            options = {}
 
             req = progress(request(url, options))
                 .on 'progress', on_progress

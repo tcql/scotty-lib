@@ -152,7 +152,7 @@
       return {
         name: version.name,
         installed: false,
-        url: version.tarball_url,
+        url: version.url,
         clean: this.checker.cleanVersion(version.name),
         in_progress: false
       };

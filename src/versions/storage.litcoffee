@@ -130,7 +130,7 @@ as in progress
             return {
                 name: version.name,
                 installed: false,
-                url: version.tarball_url,
+                url: version.url,
                 clean: @checker.cleanVersion(version.name)
                 in_progress: false
             }
