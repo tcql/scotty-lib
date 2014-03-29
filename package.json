@@ -1,6 +1,6 @@
 {
   "name": "scotty-lib",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "dependencies": {
     "github": "^0.1.14",
     "semver": "^2.2.1",
